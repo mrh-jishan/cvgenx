@@ -47,3 +47,15 @@ export class OpenAIProvider implements AIProvider {
     return text.trim();
   }
 }
+
+export async function validateOpenAIKey(key: string): Promise<boolean> {
+  if (!key) return true;
+  try {
+    const res = await fetch('https://api.openai.com/v1/models', {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    return res.status === 200;
+  } catch {
+    return false;
+  }
+}

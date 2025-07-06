@@ -32,3 +32,27 @@ export async function getDefaultPlatform(): Promise<string | undefined> {
   } catch {}
   return undefined;
 }
+
+export async function saveUserTemplatePath(path: string) {
+  const envPath = os.homedir() + '/.cvgen.env';
+  let envContent = '';
+  try {
+    envContent = await fs.readFile(envPath, 'utf8');
+    envContent = envContent.replace(/USER_TEMPLATE_PATH=.*/g, '');
+  } catch {}
+  envContent += (envContent && !envContent.endsWith('\n') ? '\n' : '') + `USER_TEMPLATE_PATH=${path}\n`;
+  await fs.writeFile(envPath, envContent, { encoding: 'utf8' });
+}
+
+export async function getUserTemplatePath(): Promise<string | undefined> {
+  const envPath = os.homedir() + '/.cvgen.env';
+  try {
+    const envContent = await fs.readFile(envPath, 'utf8');
+    for (const line of envContent.split('\n')) {
+      if (line.startsWith('USER_TEMPLATE_PATH=')) {
+        return line.replace('USER_TEMPLATE_PATH=', '').trim();
+      }
+    }
+  } catch {}
+  return undefined;
+}

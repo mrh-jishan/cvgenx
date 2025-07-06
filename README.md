@@ -15,33 +15,86 @@ npm install
 You can store your API keys in either a `.env` file in your project or a global config at `~/.cvgen.env`.
 
 - `GEMINI_API_KEY=your_google_gemini_api_key`
-- `OPENAI_API_KEY=your_openai_api_key` (future support)
+- `OPENAI_API_KEY=your_openai_api_key`
 
-To set up config interactively, run:
+To set up config interactively (with validation and default platform selection), run:
 
 ```
-cvgen --auth
+npx cvgen --auth
 ```
+- You will be prompted for your Gemini and OpenAI API keys (with validation).
+- You can choose your default platform (Gemini or OpenAI) interactively.
+- You can re-run this command anytime to update your keys or default platform.
 
 ## Usage
 
 ```
-cvgen <job-description-file.txt> <type>
+npx cvgen <job-description-file.txt> --type <resume|coverLetter|both> [options]
 ```
 
-- `<type>`: `resume` or `coverLetter`
-
-Example:
+### Example:
 
 ```
-cvgen job_description.txt resume
-cvgen job_description.txt coverLetter
+npx cvgen job_description.txt --type resume
+npx cvgen job_description.txt --type coverLetter --platform openai
+npx cvgen job_description.txt --type both --user-template my-user.json
 ```
+
+## User Template Example
+
+To view the default user template in JSON:
+```
+npx cvgen --show-user-template json
+```
+To view the default user template in YAML:
+```
+npx cvgen --show-user-template yaml
+```
+To save the template to a file for editing:
+```
+npx cvgen --show-user-template json > my-user.json
+# or
+npx cvgen --show-user-template yaml > my-user.yaml
+```
+Edit the file as needed, then use it with the CLI:
+```
+npx cvgen job.txt --type resume --user-template my-user.json
+```
+
+## User Template Management
+
+### Interactive Editing
+
+To interactively create or update your default user template:
+```sh
+npx cvgen --edit-user-template
+```
+- This will prompt you for all fields and save the result to `~/.cvgen.user.json`.
+- If the file already exists, your current values will be shown and you can update them.
+
+### Using an Existing File
+
+To set an existing file as your default user template:
+```sh
+npx cvgen --edit-user-template my-user.json
+# or
+npx cvgen --edit-user-template my-user.yaml
+```
+- This will copy the file to your home directory as `~/.cvgen.user.json` or `~/.cvgen.user.yaml` (matching the extension).
+- The CLI will always use this file as your default user info.
+
+### Best Practice
+
+- **Keep only one default user template file**: The CLI always uses the file at `~/.cvgen.user.json` or `~/.cvgen.user.yaml` (whichever was set last).
+- If you want to switch formats, use the `--edit-user-template` command with the new file, and the CLI will update your default.
+- Avoid editing both files at once; always use the one set as default.
 
 ## Features
 - Loads API keys from either local or home config
-- Interactive config setup with `--auth`
-- Generates resume or cover letter using Gemini API
+- Interactive config setup with `--auth` (with validation and platform selection)
+- Generates resume or cover letter using Gemini or OpenAI
+- Supports user info templates in JSON or YAML
+- Interactive user template editing (education, projects, summary)
 
 ## License
 

@@ -26,3 +26,8 @@ coverage/
 
 # OS
 Thumbs.db
+
+
+# Ignore all examples
+my-user.json
+my-user.yaml
