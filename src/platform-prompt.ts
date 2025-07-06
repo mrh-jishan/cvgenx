@@ -1,6 +1,7 @@
 export async function askPlatform(current: string, rl: any): Promise<string> {
   const options = ['gemini', 'openai'];
   const currentIdx = options.indexOf((current || 'gemini').toLowerCase());
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     console.log('Choose default platform:');
     options.forEach((opt, idx) => {

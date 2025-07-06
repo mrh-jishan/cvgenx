@@ -32,7 +32,9 @@ export async function editUserTemplate(filePath?: string) {
     const content = await fs.readFile(userFile, 'utf8');
     const loaded = JSON.parse(content);
     if (loaded) user = { ...user, ...loaded };
-  } catch {}
+  } catch {
+    // ignore missing user file
+  }
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string, def: string) => new Promise<string>(res => rl.question(`${q} [${def}]: `, (ans) => res(ans || def)));
   user.name = await ask('Name', user.name);

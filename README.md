@@ -80,13 +80,25 @@ npx cvgen --edit-user-template my-user.json
 # or
 npx cvgen --edit-user-template my-user.yaml
 ```
-- This will copy the file to your home directory as `~/.cvgen.user.json` or `~/.cvgen.user.yaml` (matching the extension).
+- This will copy the file to your home directory as `~/.cvgen.user.json` (converting from YAML if needed).
 - The CLI will always use this file as your default user info.
+- Only `~/.cvgen.user.json` is used as the source of truth. No YAML file is created in your home directory.
+
+### Showing Your User Template
+
+To view your current default user template in JSON:
+```sh
+npx cvgen --show-user-template json
+```
+To view it in YAML (converted on the fly from JSON):
+```sh
+npx cvgen --show-user-template yaml
+```
 
 ### Best Practice
 
-- **Keep only one default user template file**: The CLI always uses the file at `~/.cvgen.user.json` or `~/.cvgen.user.yaml` (whichever was set last).
-- If you want to switch formats, use the `--edit-user-template` command with the new file, and the CLI will update your default.
+- **Keep only one default user template file**: The CLI always uses the file at `~/.cvgen.user.json`.
+- If you want to switch formats, use the `--edit-user-template` command with the new file, and the CLI will update your default (always as JSON).
 - Avoid editing both files at once; always use the one set as default.
 
 ## Features

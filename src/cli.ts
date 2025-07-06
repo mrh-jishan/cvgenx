@@ -3,31 +3,30 @@ import path from 'path';
 import yaml from 'js-yaml';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { saveConfig, saveUserTemplatePath } from './config';
 import { Provider, ContentType } from './ai';
-import { buildPrompt, PromptType } from './ai/prompt';
+import { PromptType } from './ai/prompt';
 import { USER_BASE_INFO as DEFAULT_USER_BASE_INFO } from './user-base-info';
 import os from 'os';
 import { editUserTemplate } from './user-template';
-import { askPlatform } from './platform-prompt';
 import { handleAuthFlow } from './auth-flow';
 
 function getUserTemplateExample(format: 'json' | 'yaml') {
   if (format === 'json') {
     return JSON.stringify(DEFAULT_USER_BASE_INFO, null, 2);
   } else {
-    const yamlLib = require('js-yaml');
-    return yamlLib.dump(DEFAULT_USER_BASE_INFO);
+    return yaml.dump(DEFAULT_USER_BASE_INFO);
   }
 }
 
-async function loadUserInfo(userTemplatePath?: string) {
-  if (!userTemplatePath) return DEFAULT_USER_BASE_INFO;
-  const ext = path.extname(userTemplatePath).toLowerCase();
-  const content = await fs.readFile(userTemplatePath, 'utf8');
-  if (ext === '.json') return JSON.parse(content);
-  if (ext === '.yaml' || ext === '.yml') return yaml.load(content);
-  throw new Error('Unsupported user template format. Use .json or .yaml');
+async function loadUserInfo() {
+  // Always load from ~/.cvgen.user.json for consistency
+  const userFile = path.join(os.homedir(), '.cvgen.user.json');
+  try {
+    const content = await fs.readFile(userFile, 'utf8');
+    return JSON.parse(content);
+  } catch {
+    return DEFAULT_USER_BASE_INFO;
+  }
 }
 
 export async function mainCli() {
@@ -126,7 +125,7 @@ export async function mainCli() {
     return;
   }
 
-  const userInfo = await loadUserInfo(argv['user-template']);
+  const userInfo = await loadUserInfo();
   const provider = new Provider(argv.platform as 'gemini' | 'openai');
   const jobDescription = await fs.readFile(jobDescriptionFilePath, 'utf8');
   const type = argv.type as PromptType;

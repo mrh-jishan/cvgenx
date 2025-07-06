@@ -29,7 +29,9 @@ export async function getDefaultPlatform(): Promise<string | undefined> {
         return line.replace('CVGEN_DEFAULT_PLATFORM=', '').trim();
       }
     }
-  } catch {}
+  } catch {
+     // ignore missing config file
+  }
   return undefined;
 }
 
@@ -39,7 +41,9 @@ export async function saveUserTemplatePath(path: string) {
   try {
     envContent = await fs.readFile(envPath, 'utf8');
     envContent = envContent.replace(/USER_TEMPLATE_PATH=.*/g, '');
-  } catch {}
+  } catch {
+    // ignore missing config file
+  }
   envContent += (envContent && !envContent.endsWith('\n') ? '\n' : '') + `USER_TEMPLATE_PATH=${path}\n`;
   await fs.writeFile(envPath, envContent, { encoding: 'utf8' });
 }
@@ -53,6 +57,8 @@ export async function getUserTemplatePath(): Promise<string | undefined> {
         return line.replace('USER_TEMPLATE_PATH=', '').trim();
       }
     }
-  } catch {}
+  } catch {
+    // ignore missing config file
+  }
   return undefined;
 }

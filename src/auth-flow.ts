@@ -21,7 +21,9 @@ export async function handleAuthFlow() {
       if (line.startsWith('CVGEN_DEFAULT_PLATFORM='))
         existingPlatform = line.replace('CVGEN_DEFAULT_PLATFORM=', '').trim();
     }
-  } catch {}
+  } catch {
+    // ignore missing config file
+  }
   const readline = await import('readline');
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string, def: string) =>
@@ -30,6 +32,7 @@ export async function handleAuthFlow() {
     );
   let gemini = '';
   const geminiProvider = new Provider('gemini');
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     gemini = await ask('Enter your Gemini API key', existingGemini);
     if (!gemini || (await geminiProvider.validateKey(gemini))) break;
@@ -37,6 +40,7 @@ export async function handleAuthFlow() {
   }
   let openai = '';
   const openaiProvider = new Provider('openai');
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     openai = await ask('Enter your OpenAI API key', existingOpenai);
     if (!openai || (await openaiProvider.validateKey(openai))) break;
