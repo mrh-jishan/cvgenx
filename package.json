@@ -4,11 +4,11 @@
   "description": "CLI tool to generate resumes and cover letters using Gemini or OpenAI.",
   "main": "dist/index.js",
   "bin": {
-    "cvgen": "dist/auto-resume.js"
+    "cvgen": "bin/cvgen.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/auto-resume.js",
+    "start": "npm run build && node dist/index.js",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint 'src/**/*.{ts,js}'",
@@ -30,13 +30,17 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "js-yaml": "^4.1.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
     "@types/node-fetch": "^2.6.4",
+    "@types/yargs": "^17.0.33",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
     "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.0",
     "semantic-release": "^23.0.0",
     "typescript": "^5.0.0"
