@@ -16,6 +16,9 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
+      - name: Set git default branch to main
+        run: git config --global init.defaultBranch main
+        
       - name: Checkout code
         uses: actions/checkout@v4
       
@@ -45,6 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     steps:
+      - name: Set git default branch to main
+        run: git config --global init.defaultBranch main
+
       - name: Checkout code
         uses: actions/checkout@v4
       
