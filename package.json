@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint 'src/**/*.{ts,js}'",
     "format": "prettier --write 'src/**/*.{ts,js,json,md}'",
-    "prepare": "npm run build",
+    "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run type-check && npm run format",
     "publish": "npm publish --access public"
   },
@@ -34,11 +34,8 @@
     "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/npm": "^12.0.2",
-    "@semantic-release/release-notes-generator": "^14.0.3",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
     "@types/node-fetch": "^2.6.4",
@@ -46,8 +43,27 @@
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "husky": "^9.1.7",
     "prettier": "^3.0.0",
     "semantic-release": "^23.0.0",
     "typescript": "^5.0.0"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      "@semantic-release/github",
+      "@semantic-release/git"
+    ]
   }
 }
