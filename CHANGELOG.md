@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/mrh-jishan/cvgenx/compare/v1.24.0...v1.25.0) (2025-07-07)
+
+
+### Features
+
+* **config:** update prompt for cover letter ([6645d2a](https://github.com/mrh-jishan/cvgenx/commit/6645d2a828c6bcc7b44073735752d1766665b963))
+
 # [1.24.0](https://github.com/mrh-jishan/cvgenx/compare/v1.23.0...v1.24.0) (2025-07-07)
 
 
