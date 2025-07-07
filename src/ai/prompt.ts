@@ -19,6 +19,7 @@ export function buildPrompt(
     [${getLinkText(userInfo.linkedin)}](${userInfo.linkedin}) | [${getLinkText(userInfo.github)}](${userInfo.github}) | [${getLinkText(userInfo.portfolio)}](${userInfo.portfolio})
 
     - Carefully analyze the job description and extract all required and preferred skills, experience, and keywords.
+    - **Bold all keywords, skills, and technologies from the job description wherever they appear in the resume to maximize ATS matching.**
     - Rewrite or fabricate the user's experience, skills, and achievements to perfectly match the job description, even if it means inventing plausible details.
     - Use strong action verbs, quantify results, and focus on impact.
     - The resume must be ATS-friendly, concise, and highly persuasive.
