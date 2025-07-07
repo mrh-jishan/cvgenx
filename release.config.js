@@ -10,9 +10,15 @@ module.exports = {
             "@semantic-release/npm",
             {
                 npmPublish: true,
+                tarballDir: "dist"
             }
         ],
-        "@semantic-release/github",
+        [
+            "@semantic-release/github",
+            {
+                "assets": "dist/*.tgz"
+            }
+        ],
         "@semantic-release/git"
     ]
 };

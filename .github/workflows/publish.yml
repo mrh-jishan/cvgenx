@@ -11,6 +11,8 @@ on:
 permissions:
   contents: write
   packages: write
+  id-token: write 
+  issues: write
 
 jobs:
   ci:
