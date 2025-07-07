@@ -1,3 +1,11 @@
+# [1.23.0](https://github.com/mrh-jishan/cvgenx/compare/v1.22.0...v1.23.0) (2025-07-07)
+
+
+### Features
+
+* **config:** fixed issue on pdf ([fd584d5](https://github.com/mrh-jishan/cvgenx/commit/fd584d585750ef96ff030d8c4aa11d8ee1f9ca5d))
+* **config:** some update ([5051f01](https://github.com/mrh-jishan/cvgenx/commit/5051f01df91433626e25eb58ffd026c38d147638))
+
 # [1.22.0](https://github.com/mrh-jishan/cvgenx/compare/v1.21.0...v1.22.0) (2025-07-07)
 
 
