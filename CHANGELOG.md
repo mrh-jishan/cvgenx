@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/mrh-jishan/csvgen/compare/v1.13.0...v1.14.0) (2025-07-07)
+
+
+### Features
+
+* **config:** prefix ([3b223c9](https://github.com/mrh-jishan/csvgen/commit/3b223c96ef7a9cb10307d6febeb1214927ebf37e))
+
 # [1.13.0](https://github.com/mrh-jishan/csvgen/compare/v1.12.0...v1.13.0) (2025-07-07)
 
 
