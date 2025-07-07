@@ -1,4 +1,4 @@
-export const USER_BASE_INFO = {
+export const DEFAULT_USER_BASE_INFO = {
   name: 'Md Robiul Hassan',
   phone: '954-709-0379',
   email: 'robiul.hassan12102@gmail.com',

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
-import { USER_BASE_INFO as DEFAULT_USER_BASE_INFO } from './user-base-info';
+import { DEFAULT_USER_BASE_INFO } from './user-base-info';
 import yaml from 'js-yaml';
 
 export async function editUserTemplate(filePath?: string) {
@@ -102,15 +102,19 @@ export async function editUserTemplate(filePath?: string) {
     : user.projects;
 
   // Show and prompt for professional experience
-  if (user.professionalExperience && Array.isArray(user.professionalExperience) && user.professionalExperience.length) {
+  if (
+    user.professionalExperience &&
+    Array.isArray(user.professionalExperience) &&
+    user.professionalExperience.length
+  ) {
     console.log('Current professional experience:');
     user.professionalExperience.forEach((e: string) => console.log('  ' + e));
   }
   console.log('Enter professional experience (multi-line, press Enter twice to finish):');
   const experienceLines: string[] = [];
-  await new Promise<void>(resolve => {
+  await new Promise<void>((resolve) => {
     rl.prompt();
-    rl.on('line', line => {
+    rl.on('line', (line) => {
       if (line.trim() === '' && experienceLines.length > 0) {
         resolve();
       } else {
@@ -118,7 +122,9 @@ export async function editUserTemplate(filePath?: string) {
       }
     });
   });
-  user.professionalExperience = experienceLines.filter(Boolean).length ? experienceLines.filter(Boolean) : user.professionalExperience;
+  user.professionalExperience = experienceLines.filter(Boolean).length
+    ? experienceLines.filter(Boolean)
+    : user.professionalExperience;
 
   user.baseSummary = await ask('Base summary', user.baseSummary || '');
   rl.close();

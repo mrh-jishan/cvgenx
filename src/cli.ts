@@ -1,16 +1,30 @@
 import fs from 'fs/promises';
+import { createWriteStream } from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Provider, ContentType } from './ai';
 import { PromptType, buildPrompt } from './ai/prompt';
-import { USER_BASE_INFO as DEFAULT_USER_BASE_INFO } from './user-base-info';
+import { DEFAULT_USER_BASE_INFO } from './user-base-info';
 import os from 'os';
 import { editUserTemplate } from './user-template';
 import { handleAuthFlow } from './auth-flow';
 import readline from 'readline';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
+
+function showLoader(message: string) {
+  const frames = ['|', '/', '-', '\\'];
+  let i = 0;
+  process.stdout.write(message);
+  const interval = setInterval(() => {
+    process.stdout.write(`\r${message} ${frames[(i = ++i % frames.length)]}`);
+  }, 120);
+  return function stopLoader() {
+    clearInterval(interval);
+    process.stdout.write('\r' + ' '.repeat(message.length + 2) + '\r');
+  };
+}
 
 function getUserTemplateExample(format: 'json' | 'yaml') {
   if (format === 'json') {
@@ -47,17 +61,30 @@ async function getJobDescriptionFromStdin(): Promise<string> {
 }
 
 async function convertMarkdownToFormat(mdFile: string, outFile: string, format: string) {
-  if (format === 'pdf') {
-    await new Promise((resolve, reject) => {
-      exec(
-        `npx md-to-pdf "${mdFile}" --pdf-options '{"format":"Letter","margin":"10mm","printBackground":true}' > "${outFile}"`,
-        (err) => {
-          if (err) reject(err);
-          else resolve(undefined);
-        },
-      );
+  if (format === 'pdf') {  
+      await new Promise((resolve, reject) => {
+      const outStream = createWriteStream(outFile);
+
+      const proc = spawn('npx', [
+        'md-to-pdf',
+        mdFile,
+        '--pdf-options',
+        '{"format":"Letter","margin":"10mm","printBackground":true}'
+      ], {
+        stdio: ['inherit', 'pipe', 'inherit'] // send stdout to us, keep stderr live
+      });
+
+      proc.stdout.pipe(outStream);
+
+      proc.on('error', reject);
+
+      proc.on('close', (code) => {
+        if (code === 0) resolve(undefined);
+        else reject(new Error(`md-to-pdf failed with code ${code}`));
+      });
     });
-  } else if (format === 'docx') {
+
+  } else if (format === 'docx') {   
     await new Promise((resolve, reject) => {
       exec(
         `pandoc "${mdFile}" -o "${outFile}" --from markdown --to docx --variable=geometry:margin=1in --variable=fontsize:12pt --variable=linestretch:1.2`,
@@ -70,17 +97,20 @@ async function convertMarkdownToFormat(mdFile: string, outFile: string, format: 
   }
 }
 
-function showLoader(message: string) {
-  const frames = ['|', '/', '-', '\\'];
-  let i = 0;
-  process.stdout.write(message);
-  const interval = setInterval(() => {
-    process.stdout.write(`\r${message} ${frames[(i = ++i % frames.length)]}`);
-  }, 120);
-  return () => {
-    clearInterval(interval);
-    process.stdout.write('\r' + ' '.repeat(message.length + 2) + '\r');
-  };
+function makeFileName(name: string, type: string, ext: string) {
+  const safe = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  return [safe(name), type, getShortTimestamp()].filter(Boolean).join('-') + '.' + ext;
+}
+
+function getShortTimestamp() {
+  // Use last 4 digits: MMSS (minute and second)
+  const now = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return pad(now.getMinutes()) + pad(now.getSeconds());
 }
 
 export async function mainCli() {
@@ -190,18 +220,6 @@ export async function mainCli() {
   const type = argv.type as PromptType;
   const outputFormat = argv['output-format'];
 
-  // Helper to create a concise, safe file name
-  function makeFileName(name: string, type: string, ext: string) {
-    const safe = (str: string) =>
-      str
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    return [safe(name), type].filter(Boolean).join('-') + '.' + ext;
-  }
-
-  const outFormat = outputFormat;
-
   if (type === 'both') {
     const stopLoader = showLoader('Generating resume and cover letter with AI');
     const resumePrompt = buildPrompt(userInfo, jobDescription, 'resume');
@@ -217,11 +235,11 @@ export async function mainCli() {
     const coverLetterMdFile = makeFileName(userInfo.name, 'coverLetter', 'md');
     await fs.writeFile(resumeMdFile, resumeContent, { encoding: 'utf8' });
     await fs.writeFile(coverLetterMdFile, coverLetterContent, { encoding: 'utf8' });
-    if (outFormat === 'pdf' || outFormat === 'docx') {
-      const resumeOutFile = makeFileName(userInfo.name, 'resume', outFormat);
-      const coverLetterOutFile = makeFileName(userInfo.name, 'coverLetter', outFormat);
-      await convertMarkdownToFormat(resumeMdFile, resumeOutFile, outFormat);
-      await convertMarkdownToFormat(coverLetterMdFile, coverLetterOutFile, outFormat);
+    if (outputFormat === 'pdf' || outputFormat === 'docx') {
+      const resumeOutFile = makeFileName(userInfo.name, 'resume', outputFormat);
+      const coverLetterOutFile = makeFileName(userInfo.name, 'coverLetter', outputFormat);
+      await convertMarkdownToFormat(resumeMdFile, resumeOutFile, outputFormat);
+      await convertMarkdownToFormat(coverLetterMdFile, coverLetterOutFile, outputFormat);
       console.log(`Saved to ${resumeOutFile}`);
       console.log(`Saved to ${coverLetterOutFile}`);
     } else {
@@ -235,9 +253,9 @@ export async function mainCli() {
     stopLoader();
     const mdFile = makeFileName(userInfo.name, type, 'md');
     await fs.writeFile(mdFile, content, { encoding: 'utf8' });
-    if (outFormat === 'pdf' || outFormat === 'docx') {
-      const outFile = makeFileName(userInfo.name, type, outFormat);
-      await convertMarkdownToFormat(mdFile, outFile, outFormat);
+    if (outputFormat === 'pdf' || outputFormat === 'docx') {
+      const outFile = makeFileName(userInfo.name, type, outputFormat);
+      await convertMarkdownToFormat(mdFile, outFile, outputFormat);
       console.log(`Saved to ${outFile}`);
     } else {
       console.log(`Saved to ${mdFile}`);
