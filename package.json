@@ -17,8 +17,7 @@
     "lint": "eslint 'src/**/*.{ts,js}'",
     "format": "prettier --write 'src/**/*.{ts,js,json,md}'",
     "prepare": "husky",
-    "prepublishOnly": "npm run lint && npm run type-check && npm run format",
-    "publish": "npm publish --access public"
+    "prepublishOnly": "npm run lint && npm run type-check && npm run format"
   },
   "keywords": [
     "resume",
