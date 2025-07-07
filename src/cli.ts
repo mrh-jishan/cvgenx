@@ -49,7 +49,6 @@ async function getJobDescriptionFromStdin(): Promise<string> {
 async function convertMarkdownToFormat(mdFile: string, outFile: string, format: string) {
   if (format === 'pdf') {
     await new Promise((resolve, reject) => {
-      console.log(`npx md-to-pdf "${mdFile}" --pdf-options '{"format":"Letter","margin":"10mm","printBackground":true}' > "${outFile}"`);
       exec(
         `npx md-to-pdf "${mdFile}" --pdf-options '{"format":"Letter","margin":"10mm","printBackground":true}' > "${outFile}"`,
         (err) => {
