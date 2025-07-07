@@ -1,3 +1,12 @@
+# [1.22.0](https://github.com/mrh-jishan/cvgenx/compare/v1.21.0...v1.22.0) (2025-07-07)
+
+
+### Features
+
+* **config:** added pdf and docx setup ([aed515b](https://github.com/mrh-jishan/cvgenx/commit/aed515bc20f6004b5255e04839c357cd903ccacc))
+* **config:** update config ([3033cfd](https://github.com/mrh-jishan/cvgenx/commit/3033cfd64fcdb66498a3c5903f810833b627cdf9))
+* **config:** update template for prompt ([1b2783d](https://github.com/mrh-jishan/cvgenx/commit/1b2783d3fb7cb606950c27816c6553f486194b18))
+
 # [1.21.0](https://github.com/mrh-jishan/cvgenx/compare/v1.20.0...v1.21.0) (2025-07-07)
 
 
