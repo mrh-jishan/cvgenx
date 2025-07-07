@@ -3,11 +3,7 @@ import { AIProvider, ContentType } from './index';
 import { buildPrompt } from './prompt';
 
 export class GeminiProvider implements AIProvider {
-  async generateContent(
-    jobDescription: string,
-    type: ContentType,
-    userInfo: any,
-  ): Promise<string> {
+  async generateContent(jobDescription: string, type: ContentType, userInfo: any): Promise<string> {
     // Use shared prompt
     const prompt = buildPrompt(userInfo, jobDescription, type);
 

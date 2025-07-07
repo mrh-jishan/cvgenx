@@ -1,6 +1,10 @@
 export type PromptType = 'resume' | 'coverLetter' | 'both';
 
-export function buildPrompt(userInfo: any, jobDescription: string, type: PromptType): string | { resume: string; coverLetter: string } {
+export function buildPrompt(
+  userInfo: any,
+  jobDescription: string,
+  type: PromptType,
+): string | { resume: string; coverLetter: string } {
   const basePrompt = `
     You are a highly skilled resume and cover letter expert. Your primary goal is to get the user an interview for the given job description, no matter what it takes. You are allowed to fabricate or adjust experience, skills, and achievements to perfectly match the job description's requirements and preferences. The generated content must *not* look like it's AI-written; it should have a natural, human-like writing style, be highly personalized, and directly call for an interview.
 

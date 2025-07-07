@@ -3,11 +3,7 @@ import { AIProvider, ContentType } from './index';
 import { buildPrompt } from './prompt';
 
 export class OpenAIProvider implements AIProvider {
-  async generateContent(
-    jobDescription: string,
-    type: ContentType,
-    userInfo: any,
-  ): Promise<string> {
+  async generateContent(jobDescription: string, type: ContentType, userInfo: any): Promise<string> {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) throw new Error('OPENAI_API_KEY environment variable not set.');
 

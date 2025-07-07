@@ -8,7 +8,7 @@ export async function askPlatform(current: string, rl: any): Promise<string> {
       const mark = idx === currentIdx ? '*' : ' ';
       console.log(`  ${idx + 1}. ${opt}${mark}`);
     });
-    const ask = (q: string) => new Promise<string>(res => rl.question(q, res));
+    const ask = (q: string) => new Promise<string>((res) => rl.question(q, res));
     let answer = await ask(`Enter number or name [${options[currentIdx]}]: `);
     answer = answer.trim().toLowerCase();
     if (!answer) return options[currentIdx];

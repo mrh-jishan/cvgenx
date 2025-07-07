@@ -6,7 +6,9 @@ import fs from 'fs/promises';
 export function loadConfig() {
   const homeEnvPath = path.join(os.homedir(), '.cvgen.env');
   const localEnvPath = path.join(process.cwd(), '.env');
-  fs.stat(homeEnvPath).then(() => dotenv.config({ path: homeEnvPath })).catch(() => {});
+  fs.stat(homeEnvPath)
+    .then(() => dotenv.config({ path: homeEnvPath }))
+    .catch(() => {});
   dotenv.config({ path: localEnvPath });
 }
 
@@ -30,7 +32,7 @@ export async function getDefaultPlatform(): Promise<string | undefined> {
       }
     }
   } catch {
-     // ignore missing config file
+    // ignore missing config file
   }
   return undefined;
 }
@@ -44,7 +46,8 @@ export async function saveUserTemplatePath(path: string) {
   } catch {
     // ignore missing config file
   }
-  envContent += (envContent && !envContent.endsWith('\n') ? '\n' : '') + `USER_TEMPLATE_PATH=${path}\n`;
+  envContent +=
+    (envContent && !envContent.endsWith('\n') ? '\n' : '') + `USER_TEMPLATE_PATH=${path}\n`;
   await fs.writeFile(envPath, envContent, { encoding: 'utf8' });
 }
 

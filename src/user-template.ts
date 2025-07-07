@@ -22,7 +22,9 @@ export async function editUserTemplate(filePath?: string) {
     }
     await fs.writeFile(userFile, JSON.stringify(userObj, null, 2), { encoding: 'utf8' });
     await saveUserTemplatePath(userFile);
-    console.log(`Copied ${filePath} to ${userFile} (converted to JSON) and set as default user template.`);
+    console.log(
+      `Copied ${filePath} to ${userFile} (converted to JSON) and set as default user template.`,
+    );
     return;
   }
   // Interactive prompt for all fields
@@ -36,7 +38,8 @@ export async function editUserTemplate(filePath?: string) {
     // ignore missing user file
   }
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const ask = (q: string, def: string) => new Promise<string>(res => rl.question(`${q} [${def}]: `, (ans) => res(ans || def)));
+  const ask = (q: string, def: string) =>
+    new Promise<string>((res) => rl.question(`${q} [${def}]: `, (ans) => res(ans || def)));
   user.name = await ask('Name', user.name);
   user.phone = await ask('Phone', user.phone);
   user.email = await ask('Email', user.email);
@@ -51,9 +54,9 @@ export async function editUserTemplate(filePath?: string) {
   }
   console.log('Enter education (multi-line, press Enter twice to finish):');
   const educationLines: string[] = [];
-  await new Promise<void>(resolve => {
+  await new Promise<void>((resolve) => {
     rl.prompt();
-    rl.on('line', line => {
+    rl.on('line', (line) => {
       if (line.trim() === '' && educationLines.length > 0) {
         resolve();
       } else {
@@ -61,7 +64,9 @@ export async function editUserTemplate(filePath?: string) {
       }
     });
   });
-  user.education = educationLines.filter(Boolean).length ? educationLines.filter(Boolean) : user.education;
+  user.education = educationLines.filter(Boolean).length
+    ? educationLines.filter(Boolean)
+    : user.education;
 
   // Show and prompt for projects
   if (user.projects && Array.isArray(user.projects) && user.projects.length) {
@@ -81,9 +86,9 @@ export async function editUserTemplate(filePath?: string) {
   }
   console.log('Enter projects (multi-line, press Enter twice to finish):');
   const projectLines: string[] = [];
-  await new Promise<void>(resolve => {
+  await new Promise<void>((resolve) => {
     rl.prompt();
-    rl.on('line', line => {
+    rl.on('line', (line) => {
       if (line.trim() === '' && projectLines.length > 0) {
         resolve();
       } else {
@@ -91,7 +96,9 @@ export async function editUserTemplate(filePath?: string) {
       }
     });
   });
-  user.projects = projectLines.filter(Boolean).length ? projectLines.filter(Boolean) : user.projects;
+  user.projects = projectLines.filter(Boolean).length
+    ? projectLines.filter(Boolean)
+    : user.projects;
 
   user.baseSummary = await ask('Base summary', user.baseSummary || '');
   rl.close();
