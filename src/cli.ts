@@ -4,11 +4,13 @@ import yaml from 'js-yaml';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Provider, ContentType } from './ai';
-import { PromptType } from './ai/prompt';
+import { PromptType, buildPrompt } from './ai/prompt';
 import { USER_BASE_INFO as DEFAULT_USER_BASE_INFO } from './user-base-info';
 import os from 'os';
 import { editUserTemplate } from './user-template';
 import { handleAuthFlow } from './auth-flow';
+import readline from 'readline';
+import { exec } from 'child_process';
 
 function getUserTemplateExample(format: 'json' | 'yaml') {
   if (format === 'json') {
@@ -27,6 +29,58 @@ async function loadUserInfo() {
   } catch {
     return DEFAULT_USER_BASE_INFO;
   }
+}
+
+async function getJobDescriptionFromStdin(): Promise<string> {
+  console.log('Paste the job description below. Press Ctrl+D (or Ctrl+Z on Windows) when done:');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: true,
+  });
+  let input = '';
+  for await (const line of rl) {
+    input += line + '\n';
+  }
+  rl.close();
+  return input.trim();
+}
+
+async function convertMarkdownToFormat(mdFile: string, outFile: string, format: string) {
+  if (format === 'pdf') {
+    await new Promise((resolve, reject) => {
+      exec(
+        `npx md-to-pdf "${mdFile}" --pdf-options '{"format":"Letter","margin":"10mm","printBackground":true}' > "${outFile}"`,
+        (err) => {
+          if (err) reject(err);
+          else resolve(undefined);
+        },
+      );
+    });
+  } else if (format === 'docx') {
+    await new Promise((resolve, reject) => {
+      exec(
+        `pandoc "${mdFile}" -o "${outFile}" --from markdown --to docx --variable=geometry:margin=1in --variable=fontsize:12pt --variable=linestretch:1.2`,
+        (err) => {
+          if (err) reject(err);
+          else resolve(undefined);
+        },
+      );
+    });
+  }
+}
+
+function showLoader(message: string) {
+  const frames = ['|', '/', '-', '\\'];
+  let i = 0;
+  process.stdout.write(message);
+  const interval = setInterval(() => {
+    process.stdout.write(`\r${message} ${frames[(i = ++i % frames.length)]}`);
+  }, 120);
+  return () => {
+    clearInterval(interval);
+    process.stdout.write('\r' + ' '.repeat(message.length + 2) + '\r');
+  };
 }
 
 export async function mainCli() {
@@ -50,8 +104,8 @@ export async function mainCli() {
     .option('output-format', {
       alias: 'o',
       describe: 'Output file format',
-      choices: ['txt', 'docx', 'pdf'],
-      default: 'txt',
+      choices: ['md', 'docx', 'pdf'],
+      default: 'md',
       type: 'string',
     })
     .option('user-template', {
@@ -120,28 +174,73 @@ export async function mainCli() {
   }
 
   const jobDescriptionFilePath = argv._[0] as string;
+  let jobDescription: string;
   if (!jobDescriptionFilePath) {
-    console.log('Please provide a job description file.');
-    return;
+    jobDescription = await getJobDescriptionFromStdin();
+    if (!jobDescription) {
+      console.log('No job description provided.');
+      return;
+    }
+  } else {
+    jobDescription = await fs.readFile(jobDescriptionFilePath, 'utf8');
   }
 
   const userInfo = await loadUserInfo();
   const provider = new Provider(argv.platform as 'gemini' | 'openai');
-  const jobDescription = await fs.readFile(jobDescriptionFilePath, 'utf8');
   const type = argv.type as PromptType;
   const outputFormat = argv['output-format'];
 
+  // Helper to create a concise, safe file name
+  function makeFileName(name: string, type: string, ext: string) {
+    const safe = (str: string) =>
+      str
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return [safe(name), type].filter(Boolean).join('-') + '.' + ext;
+  }
+
+  const outFormat = outputFormat;
+
   if (type === 'both') {
-    for (const t of ['resume', 'coverLetter'] as ContentType[]) {
-      const content = await provider.generateContent(jobDescription, t, userInfo);
-      const outFile = `${t}.${outputFormat}`;
-      await fs.writeFile(outFile, content, { encoding: 'utf8' });
-      console.log(`Saved to ${outFile}`);
+    const stopLoader = showLoader('Generating resume and cover letter with AI');
+    const resumePrompt = buildPrompt(userInfo, jobDescription, 'resume');
+    const coverLetterPrompt = buildPrompt(userInfo, jobDescription, 'coverLetter');
+    const resumeContent = await provider.generateContent(resumePrompt, 'resume', userInfo);
+    const coverLetterContent = await provider.generateContent(
+      coverLetterPrompt,
+      'coverLetter',
+      userInfo,
+    );
+    stopLoader();
+    const resumeMdFile = makeFileName(userInfo.name, 'resume', 'md');
+    const coverLetterMdFile = makeFileName(userInfo.name, 'coverLetter', 'md');
+    await fs.writeFile(resumeMdFile, resumeContent, { encoding: 'utf8' });
+    await fs.writeFile(coverLetterMdFile, coverLetterContent, { encoding: 'utf8' });
+    if (outFormat === 'pdf' || outFormat === 'docx') {
+      const resumeOutFile = makeFileName(userInfo.name, 'resume', outFormat);
+      const coverLetterOutFile = makeFileName(userInfo.name, 'coverLetter', outFormat);
+      await convertMarkdownToFormat(resumeMdFile, resumeOutFile, outFormat);
+      await convertMarkdownToFormat(coverLetterMdFile, coverLetterOutFile, outFormat);
+      console.log(`Saved to ${resumeOutFile}`);
+      console.log(`Saved to ${coverLetterOutFile}`);
+    } else {
+      console.log(`Saved to ${resumeMdFile}`);
+      console.log(`Saved to ${coverLetterMdFile}`);
     }
   } else {
-    const content = await provider.generateContent(jobDescription, type as ContentType, userInfo);
-    const outFile = `${type}.${outputFormat}`;
-    await fs.writeFile(outFile, content, { encoding: 'utf8' });
-    console.log(`Saved to ${outFile}`);
+    const stopLoader = showLoader(`Generating ${type} with AI`);
+    const prompt = buildPrompt(userInfo, jobDescription, type);
+    const content = await provider.generateContent(prompt, type as ContentType, userInfo);
+    stopLoader();
+    const mdFile = makeFileName(userInfo.name, type, 'md');
+    await fs.writeFile(mdFile, content, { encoding: 'utf8' });
+    if (outFormat === 'pdf' || outFormat === 'docx') {
+      const outFile = makeFileName(userInfo.name, type, outFormat);
+      await convertMarkdownToFormat(mdFile, outFile, outFormat);
+      console.log(`Saved to ${outFile}`);
+    } else {
+      console.log(`Saved to ${mdFile}`);
+    }
   }
 }

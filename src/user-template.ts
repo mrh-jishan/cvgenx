@@ -46,6 +46,7 @@ export async function editUserTemplate(filePath?: string) {
   user.linkedin = await ask('LinkedIn', user.linkedin);
   user.github = await ask('GitHub', user.github);
   user.portfolio = await ask('Portfolio', user.portfolio);
+  user.address = await ask('Address', user.address || '');
 
   // Show and prompt for education
   if (user.education && Array.isArray(user.education) && user.education.length) {
@@ -99,6 +100,25 @@ export async function editUserTemplate(filePath?: string) {
   user.projects = projectLines.filter(Boolean).length
     ? projectLines.filter(Boolean)
     : user.projects;
+
+  // Show and prompt for professional experience
+  if (user.professionalExperience && Array.isArray(user.professionalExperience) && user.professionalExperience.length) {
+    console.log('Current professional experience:');
+    user.professionalExperience.forEach((e: string) => console.log('  ' + e));
+  }
+  console.log('Enter professional experience (multi-line, press Enter twice to finish):');
+  const experienceLines: string[] = [];
+  await new Promise<void>(resolve => {
+    rl.prompt();
+    rl.on('line', line => {
+      if (line.trim() === '' && experienceLines.length > 0) {
+        resolve();
+      } else {
+        experienceLines.push(line);
+      }
+    });
+  });
+  user.professionalExperience = experienceLines.filter(Boolean).length ? experienceLines.filter(Boolean) : user.professionalExperience;
 
   user.baseSummary = await ask('Base summary', user.baseSummary || '');
   rl.close();

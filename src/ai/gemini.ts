@@ -1,50 +1,30 @@
-import fetch from 'node-fetch';
+import { GoogleGenAI } from '@google/genai';
 import { AIProvider, ContentType } from './index';
 import { buildPrompt } from './prompt';
 
 export class GeminiProvider implements AIProvider {
   async generateContent(jobDescription: string, type: ContentType, userInfo: any): Promise<string> {
-    // Use shared prompt
+    const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
     const prompt = buildPrompt(userInfo, jobDescription, type);
-
-    const response = await fetch('https://api.gemini.com/v1/content/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        prompt,
-        type,
-        userInfo,
-      }),
+    const response = await genAI.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: prompt.toString(),
     });
-
-    if (!response.ok) {
-      throw new Error(`Error generating content: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.content;
+    return response.text!;
   }
 }
 
 export async function validateGeminiKey(key: string): Promise<boolean> {
   if (!key) return true;
   try {
-    const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' +
-        key,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: 'ping' }] }],
-        }),
-      },
-    );
-    return res.status === 200 || res.status === 400; // 400 means bad prompt, but key is valid
-  } catch {
+    const genAI = new GoogleGenAI({ apiKey: key });
+    await genAI.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: 'ping',
+    });
+    return true;
+  } catch (err) {
+    console.error('Gemini API key validation failed:', err);
     return false;
   }
 }

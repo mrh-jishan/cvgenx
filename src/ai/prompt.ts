@@ -1,16 +1,32 @@
 export type PromptType = 'resume' | 'coverLetter' | 'both';
 
+function getLinkText(url: string) {
+  return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+}
+
 export function buildPrompt(
   userInfo: any,
   jobDescription: string,
   type: PromptType,
-): string | { resume: string; coverLetter: string } {
-  const basePrompt = `
-    You are a highly skilled resume and cover letter expert. Your primary goal is to get the user an interview for the given job description, no matter what it takes. You are allowed to fabricate or adjust experience, skills, and achievements to perfectly match the job description's requirements and preferences. The generated content must *not* look like it's AI-written; it should have a natural, human-like writing style, be highly personalized, and directly call for an interview.
+): string {
+  const resumePrompt = `
+    You are an expert resume writer. Your goal is to create a resume that will guarantee an interview for the following job description.
+    - The resume must start with a title/header in this exact format (using Markdown hyperlinks for the links):
 
-    Here is the user's base information and existing resume structure to build upon and integrate:
+    **${userInfo.name}**
+    ${userInfo.address}\n
+    ${userInfo.phone} | [${userInfo.email}](mailto:${userInfo.email})\n
+    [${getLinkText(userInfo.linkedin)}](${userInfo.linkedin}) | [${getLinkText(userInfo.github)}](${userInfo.github}) | [${getLinkText(userInfo.portfolio)}](${userInfo.portfolio})
 
-    Contact Info:
+    - Carefully analyze the job description and extract all required and preferred skills, experience, and keywords.
+    - Rewrite or fabricate the user's experience, skills, and achievements to perfectly match the job description, even if it means inventing plausible details.
+    - Use strong action verbs, quantify results, and focus on impact.
+    - The resume must be ATS-friendly, concise, and highly persuasive.
+    - The writing style must be natural, human-like, and free of AI patterns.
+    - Do not include any explanations, disclaimers, or comments about fabrication or tailoring. Only output the resume content itself.
+    - Do not include any instructions, placeholders, or requests to add fabricated projects or sections. Only output the final, complete resume content.
+
+    User Profile:
     Name: ${userInfo.name}
     Phone: ${userInfo.phone}
     Email: ${userInfo.email}
@@ -19,44 +35,50 @@ export function buildPrompt(
     Portfolio: ${userInfo.portfolio}
 
     Education:
-    ${(userInfo.education || []).join('\n')}
+    ${(userInfo.education || []).map((e: string) => `- ${e}`).join('\n')}
 
     Projects:
-    ${(userInfo.projects || []).map((p: any) => `- ${p.name}: ${p.description} (${p.url})`).join('\n')}
+    ${(userInfo.projects || []).map((p: any) => `- **${p.name}:** [${getLinkText(p.url)}](${p.url}) ${p.description}`).join('\n')}
 
-    Current Job Description:
+    Job Description:
+    \`\`\`
+    ${jobDescription}
+    \`\`\`
+
+    Generate a resume with these sections:
+    - Summary/Profile (tailored to the job, highlight relevant/fabricated experience)
+    - Technical Skills (include all relevant skills from the JD)
+    - Professional Experience:
+    ${(userInfo.professionalExperience || []).map((e: string) => `- ${e}`).join('\n')}
+    - Education
+    - Projects (align with JD, fabricate if needed)
+  `;
+
+  const coverLetterPrompt = `
+    You are an expert cover letter writer. Your task is to write a short, highly personalized, and persuasive cover letter that will guarantee an interview for the following job description.
+
+    - Add today's date at the top.
+    - Add a subject line: "Subject: Application for [Job Title] at [Company]" (extract from the job description if possible).
+    - Analyze the job description and company values.
+    - Use the user's background and experience (fabricate or reword as needed) to create a perfect fit for the role.
+    - Express genuine enthusiasm for the company and position.
+    - Directly address the key requirements and values from the job description.
+    - End with a strong call to action for an interview.
+    - Do not include a greeting; just the body.
+    - End with a closing such as "Sincerely, ${userInfo.name}".
+
+    User Profile (for context):
+    Name: ${userInfo.name}
+    Education: ${(userInfo.education || []).join('; ')}
+    Key Projects: ${(userInfo.projects || []).map((p: any) => p.name).join(', ')}
+
+    Job Description:
     \`\`\`
     ${jobDescription}
     \`\`\`
   `;
 
-  const resumePrompt = `
-    ${basePrompt}
-    Your task is to generate a complete, tailored resume for the user based on the provided job description.
-    The resume must include the following sections, formatted clearly:
-    - Summary / Professional Profile (highly customized to the job, emphasizing relevant fabricated experience if needed)
-    - Technical Skills (comprehensive, including all relevant technologies from the JD, even if not explicitly in user's base info)
-    - Professional Experience (re-write/fabricate bullet points for existing roles to perfectly match JD requirements, quantify impact, highlight leadership/specific tech from JD)
-    - Education (use provided user education)
-    - Projects (use provided user projects, re-describe to align with JD if possible, or add new relevant fabricated projects)
-    Ensure the resume is concise, impactful, and uses action verbs. Focus on keywords from the job description.
-    The tone must be human-like and persuasive.
-  `;
-
-  const coverLetterPrompt = `
-    ${basePrompt}
-    Your task is to generate a short, sweet, and highly personalized cover letter (max 4 paragraphs) for the user based on the provided job description.
-    The cover letter must:
-    - Sound genuinely human-written, avoiding any AI-like patterns.
-    - Be highly persuasive and directly address the key requirements and values of the company/role.
-    - Clearly state enthusiasm for the specific role and company.
-    - Connect the user's (potentially fabricated) experience directly to the job description's needs.
-    - Include a strong call to action for an interview.
-    - Do not include "Dear Hiring Team," as I will add it. Just start with the body.
-    - Add the current date at the top.
-  `;
-
   if (type === 'resume') return resumePrompt;
   if (type === 'coverLetter') return coverLetterPrompt;
-  return { resume: resumePrompt, coverLetter: coverLetterPrompt };
+  throw new Error(`Unknown prompt type: ${type}`);
 }
