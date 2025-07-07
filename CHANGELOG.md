@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/mrh-jishan/csvgen/compare/v1.6.0...v1.7.0) (2025-07-07)
+
+
+### Features
+
+* **config:** fix publish release ([eaf3332](https://github.com/mrh-jishan/csvgen/commit/eaf33322e6524a13e20e355fb072e0db8dfcc56b))
+
 # [1.6.0](https://github.com/mrh-jishan/csvgen/compare/v1.5.0...v1.6.0) (2025-07-07)
 
 
