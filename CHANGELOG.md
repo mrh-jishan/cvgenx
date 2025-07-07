@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/mrh-jishan/csvgen/compare/v1.2.0...v1.3.0) (2025-07-07)
+
+
+### Features
+
+* **config:** allow npm publish true ([7c16938](https://github.com/mrh-jishan/csvgen/commit/7c1693891d6aa1af125640e60dbbe5f4860108a0))
+
 # [1.2.0](https://github.com/mrh-jishan/csvgen/compare/v1.1.0...v1.2.0) (2025-07-07)
 
 
