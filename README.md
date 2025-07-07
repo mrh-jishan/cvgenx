@@ -2,12 +2,22 @@
 
 A CLI tool to generate tailored resumes and cover letters from a job description using Gemini (Google) or OpenAI (ChatGPT).
 
+[![npm version](https://img.shields.io/npm/v/cvgenx.svg)](https://www.npmjs.com/package/cvgenx)
+[![npm downloads](https://img.shields.io/npm/dm/cvgenx.svg)](https://www.npmjs.com/package/cvgenx)
+[![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 ## Installation
 
 Clone the repo and run:
 
 ```
 npm install
+```
+
+Or install globally from npm:
+
+```
+npm install -g cvgenx
 ```
 
 ## Configuration
@@ -107,6 +117,20 @@ npx cvgenx --show-user-template yaml
 - Generates resume or cover letter using Gemini or OpenAI
 - Supports user info templates in JSON or YAML
 - Interactive user template editing (education, projects, summary)
+
+## Contributing
+
+Contributions are welcome! To get started:
+
+1. Fork this repository.
+2. Create a new branch for your feature or bugfix.
+3. Make your changes and add tests if applicable.
+4. Run `npm test` to ensure everything passes.
+5. Submit a pull request with a clear description of your changes.
+
+Please follow the existing code style and include relevant documentation updates.
+
+If you have questions or suggestions, feel free to open an issue.
 
 ## License
 
