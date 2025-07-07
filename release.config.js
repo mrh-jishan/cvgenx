@@ -9,15 +9,10 @@ module.exports = {
         [
             "@semantic-release/npm",
             {
-                npmPublish: true,               
+                npmPublish: true,
             }
         ],
-        [
-            "@semantic-release/github",
-            {
-                "assets": "dist/*.tgz"
-            }
-        ],
+        "@semantic-release/github",
         "@semantic-release/git"
     ]
 };
