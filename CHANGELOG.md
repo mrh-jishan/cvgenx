@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/mrh-jishan/csvgen/compare/v1.5.0...v1.6.0) (2025-07-07)
+
+
+### Features
+
+* **config:** fix conflict ([e0e9332](https://github.com/mrh-jishan/csvgen/commit/e0e93328c363fc6ab813147fde532f45129b1367))
+
 # [1.5.0](https://github.com/mrh-jishan/csvgen/compare/v1.4.0...v1.5.0) (2025-07-07)
 
 
