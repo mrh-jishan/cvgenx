@@ -65,7 +65,6 @@ export function buildPrompt(
     - Express genuine enthusiasm for the company and position.
     - Directly address the key requirements and values from the job description.
     - End with a strong call to action for an interview.
-    - Do not include a greeting; just the body.
     - End with a closing such as "Sincerely, ${userInfo.name}".
     - **Do not use any placeholders, bracketed instructions, or dummy text. Only output the final, complete cover letter content.**
 
