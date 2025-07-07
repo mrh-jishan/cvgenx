@@ -5,7 +5,7 @@ dist/
 # Env
 .env
 .env.*
-.cvgenxx.env
+.cvgenx.env
 
 # Logs
 *.log

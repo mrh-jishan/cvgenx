@@ -7,7 +7,7 @@ import fs from 'fs/promises';
 
 export async function handleAuthFlow() {
   // Load existing config if present
-  const homeEnvPath = path.join(os.homedir(), '.cvgenxx.env');
+  const homeEnvPath = path.join(os.homedir(), '.cvgenx.env');
   let existingGemini = '';
   let existingOpenai = '';
   let existingPlatform = '';
@@ -18,8 +18,8 @@ export async function handleAuthFlow() {
         existingGemini = line.replace('GEMINI_API_KEY=', '').trim();
       if (line.startsWith('OPENAI_API_KEY='))
         existingOpenai = line.replace('OPENAI_API_KEY=', '').trim();
-      if (line.startsWith('cvgenxx_DEFAULT_PLATFORM='))
-        existingPlatform = line.replace('cvgenxx_DEFAULT_PLATFORM=', '').trim();
+      if (line.startsWith('cvgenx_DEFAULT_PLATFORM='))
+        existingPlatform = line.replace('cvgenx_DEFAULT_PLATFORM=', '').trim();
     }
   } catch {
     // ignore missing config file

@@ -19,8 +19,8 @@ function getUserTemplateExample(format: 'json' | 'yaml') {
 }
 
 async function loadUserInfo() {
-  // Always load from ~/.cvgenxx.user.json for consistency
-  const userFile = path.join(os.homedir(), '.cvgenxx.user.json');
+  // Always load from ~/.cvgenx.user.json for consistency
+  const userFile = path.join(os.homedir(), '.cvgenx.user.json');
   try {
     const content = await fs.readFile(userFile, 'utf8');
     return JSON.parse(content);
@@ -96,8 +96,8 @@ export async function mainCli() {
   if (argv['show-user-template'] !== undefined) {
     let format: 'json' | 'yaml' = 'json';
     if (argv['show-user-template'] === 'yaml') format = 'yaml';
-    // Always read from ~/.cvgenxx.user.json and convert to YAML if needed
-    const userFile = path.join(os.homedir(), `.cvgenxx.user.json`);
+    // Always read from ~/.cvgenx.user.json and convert to YAML if needed
+    const userFile = path.join(os.homedir(), `.cvgenx.user.json`);
     try {
       const content = await fs.readFile(userFile, 'utf8');
       if (format === 'json') {

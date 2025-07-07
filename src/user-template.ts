@@ -7,9 +7,9 @@ import yaml from 'js-yaml';
 export async function editUserTemplate(filePath?: string) {
   const { saveUserTemplatePath } = await import('./config');
   const readline = await import('readline');
-  const userFile = path.join(os.homedir(), `.cvgenxx.user.json`);
+  const userFile = path.join(os.homedir(), `.cvgenx.user.json`);
   if (filePath) {
-    // Always convert to JSON and save as ~/.cvgenxx.user.json
+    // Always convert to JSON and save as ~/.cvgenx.user.json
     const ext = path.extname(filePath).toLowerCase();
     const content = await fs.readFile(filePath, 'utf8');
     let userObj: any;
