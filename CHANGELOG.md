@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/mrh-jishan/csvgen/compare/v1.8.0...v1.9.0) (2025-07-07)
+
+
+### Features
+
+* **config:** make public ([541d065](https://github.com/mrh-jishan/csvgen/commit/541d06571d9910ff000427703256253737a6d0a6))
+
 # [1.8.0](https://github.com/mrh-jishan/csvgen/compare/v1.7.0...v1.8.0) (2025-07-07)
 
 
