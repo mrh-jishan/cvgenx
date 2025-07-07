@@ -18,5 +18,6 @@ module.exports = {
                 'vercel',
             ],
         ],
+        'body-max-line-length': [0, 'always', 0],
     },
 };
