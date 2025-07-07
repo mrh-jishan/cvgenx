@@ -14,8 +14,8 @@ export function buildPrompt(
     - The resume must start with a title/header in this exact format (using Markdown hyperlinks for the links):
 
     **${userInfo.name}**
-    ${userInfo.address}\n
-    ${userInfo.phone} | [${userInfo.email}](mailto:${userInfo.email})\n
+    ${userInfo.address}\t
+    ${userInfo.phone} | [${userInfo.email}](mailto:${userInfo.email})\t
     [${getLinkText(userInfo.linkedin)}](${userInfo.linkedin}) | [${getLinkText(userInfo.github)}](${userInfo.github}) | [${getLinkText(userInfo.portfolio)}](${userInfo.portfolio})
 
     - Carefully analyze the job description and extract all required and preferred skills, experience, and keywords.
