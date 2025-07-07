@@ -43,9 +43,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release 
-      
-      - name: Publish to GitHub Packages
-        run: npm publish --access public --registry=https://npm.pkg.github.com/
-        env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
