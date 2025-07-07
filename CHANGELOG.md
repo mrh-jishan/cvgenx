@@ -1,3 +1,11 @@
+# [1.21.0](https://github.com/mrh-jishan/cvgenx/compare/v1.20.0...v1.21.0) (2025-07-07)
+
+
+### Features
+
+* **config:** change to cvgenx ([c6c8894](https://github.com/mrh-jishan/cvgenx/commit/c6c8894097a57682da917b0deebc08d8b6d5b194))
+* **config:** change to cvgenx ([6aaef08](https://github.com/mrh-jishan/cvgenx/commit/6aaef085ff9431611fb5289470af5c6584696ee6))
+
 # [1.20.0](https://github.com/mrh-jishan/csvgen/compare/v1.19.0...v1.20.0) (2025-07-07)
 
 
