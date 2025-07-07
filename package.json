@@ -1,6 +1,6 @@
 {
   "version": "1.9.0",
-  "name": "cvgen",
+  "name": "@mrh-jishan/cvgen",
   "description": "CLI tool to generate resumes and cover letters using Gemini or OpenAI.",
   "main": "dist/index.js",
   "bin": {
