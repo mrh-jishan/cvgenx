@@ -12,7 +12,7 @@ export const DEFAULT_USER_BASE_INFO = {
   projects: [
     {
       name: 'DataFlow',
-      url: 'https://dataflow.360tablero.com/landing',
+      url: 'https://dataflow.360tablero.com/',
       description:
         'Developed a comprehensive suite of tools for data transformation and visualization using Next.js, Firebase, Firestore, Vercel, Tailwind CSS, Stripe, and AWS.',
     },

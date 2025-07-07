@@ -13,7 +13,7 @@ export function buildPrompt(
     You are an expert resume writer. Your goal is to create a resume that will guarantee an interview for the following job description.
     - The resume must start with a title/header in this exact format (using Markdown hyperlinks for the links):
 
-    **${userInfo.name}**
+    **${userInfo.name}**     
     ${userInfo.address}     
     ${userInfo.phone} | [${userInfo.email}](mailto:${userInfo.email})    
     [${getLinkText(userInfo.linkedin)}](${userInfo.linkedin}) | [${getLinkText(userInfo.github)}](${userInfo.github}) | [${getLinkText(userInfo.portfolio)}](${userInfo.portfolio})
