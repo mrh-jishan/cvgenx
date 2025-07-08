@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/mrh-jishan/cvgenx/compare/v1.28.0...v1.29.0) (2025-07-08)
+
+
+### Features
+
+* **profile:** add all project ([d6b8b8e](https://github.com/mrh-jishan/cvgenx/commit/d6b8b8e99db99fc4c30a45111fbaf0004b5716d0))
+
 # [1.28.0](https://github.com/mrh-jishan/cvgenx/compare/v1.27.0...v1.28.0) (2025-07-08)
 
 
