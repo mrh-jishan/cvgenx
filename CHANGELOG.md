@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/mrh-jishan/cvgenx/compare/v1.27.0...v1.28.0) (2025-07-08)
+
+
+### Features
+
+* **profile:** update prompt for cover letter instruction ([3e35f1e](https://github.com/mrh-jishan/cvgenx/commit/3e35f1e30e872852ee05ac0da3ec0300ab3b1647))
+
 # [1.27.0](https://github.com/mrh-jishan/cvgenx/compare/v1.26.0...v1.27.0) (2025-07-08)
 
 

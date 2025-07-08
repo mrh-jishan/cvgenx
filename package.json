@@ -1,5 +1,5 @@
 {
-  "version": "1.27.0",
+  "version": "1.28.0",
   "name": "cvgenx",
   "description": "CLI tool to generate resumes and cover letters using Gemini or OpenAI.",
   "main": "dist/index.js",
