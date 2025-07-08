@@ -1,5 +1,5 @@
 export const DEFAULT_USER_BASE_INFO = {
-  name: 'Md Robiul Hassan',
+  name: 'Robiul Hassan',
   phone: '954-709-0379',
   email: 'robiul.hassan12102@gmail.com',
   linkedin: 'https://linkedin.com/in/rhsn1',
