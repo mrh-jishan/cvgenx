@@ -66,7 +66,7 @@ export function buildPrompt(
     - Directly address the key requirements and values from the job description.
     - End with a strong call to action for an interview.
     - End with a closing such as "Sincerely, ${userInfo.name}".
-    - **Do not use any placeholders, bracketed instructions, or dummy text. Only output the final, complete cover letter content.**
+    - **Do not use any placeholders, bracketed text, or example instructions (such as [Platform where you saw the ad] or [insert here]). If information is missing, omit it or write the letter naturally without it.**
 
     User Profile (for context):
     Name: ${userInfo.name}
