@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/mrh-jishan/cvgenx/compare/v1.26.0...v1.27.0) (2025-07-08)
+
+
+### Features
+
+* **profile:** some update ([d6ef593](https://github.com/mrh-jishan/cvgenx/commit/d6ef5933a1f93913aecccdee8670862486b5e3cc))
+
 # [1.26.0](https://github.com/mrh-jishan/cvgenx/compare/v1.25.0...v1.26.0) (2025-07-07)
 
 
