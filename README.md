@@ -48,7 +48,10 @@ npx cvgenx <job-description-file.txt> --type <resume|coverLetter|both> [options]
 npx cvgenx job_description.txt --type resume
 npx cvgenx job_description.txt --type coverLetter --platform openai
 npx cvgenx job_description.txt --type both --user-template my-user.json
+npx cvgenx --type both --output-format pdf
 ```
+
+If you run `npx cvgenx --type both --output-format pdf` without specifying a job description file, you will be prompted to paste the job description directly into the terminal. When finished, press `Ctrl+D` (on Mac/Linux) or `Ctrl+Z` (on Windows) to submit the input.
 
 ## User Template Example
 
