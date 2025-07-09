@@ -1,10 +1,45 @@
-# cvgenx (Node22)
+# cvgenx
 
 A CLI tool to generate tailored resumes and cover letters from a job description using Gemini (Google) or OpenAI (ChatGPT).
 
 [![npm version](https://img.shields.io/npm/v/cvgenx.svg)](https://www.npmjs.com/package/cvgenx)
 [![npm downloads](https://img.shields.io/npm/dm/cvgenx.svg)](https://www.npmjs.com/package/cvgenx)
 [![license: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+## Requirements
+
+This project requires **Node.js v22 or higher**.
+
+### Installing Node.js v22+ with nvm
+
+If you don't have Node.js v22+ installed, we recommend using [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm) to install and manage Node.js versions:
+
+#### Install nvm (if not already installed):
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+# or
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+```
+
+#### Restart your terminal or run:
+```bash
+source ~/.bashrc
+# or
+source ~/.zshrc
+```
+
+#### Install and use Node.js v22:
+```bash
+nvm install 22
+nvm use 22
+nvm alias default 22
+```
+
+#### Verify installation:
+```bash
+node --version  # Should show v22.x.x
+npm --version
+```
 
 ## Installation
 
