@@ -1,4 +1,4 @@
-# cvgenx
+# cvgenx (Node22)
 
 A CLI tool to generate tailored resumes and cover letters from a job description using Gemini (Google) or OpenAI (ChatGPT).
 
