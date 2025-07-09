@@ -43,16 +43,30 @@ npm --version
 
 ## Installation
 
-Clone the repo and run:
+### Quick Start (Recommended)
 
+You can use cvgenx directly with npx without any installation:
+
+```bash
+npx cvgenx --help
 ```
-npm install
-```
+
+### Global Installation
 
 Or install globally from npm:
 
-```
+```bash
 npm install -g cvgenx
+```
+
+### For Contributors Only
+
+Clone the repo only if you want to contribute to the project:
+
+```bash
+git clone https://github.com/mrh-jishan/cvgenx.git
+cd cvgenx
+npm install
 ```
 
 ## Configuration
