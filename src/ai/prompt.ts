@@ -56,22 +56,50 @@ export function buildPrompt(
   `;
 
   const coverLetterPrompt = `
-    You are an expert cover letter writer. Your task is to write a short, highly personalized, and persuasive cover letter that will guarantee an interview for the following job description.
+    You are an expert cover letter writer. Your task is to write a highly professional, structured cover letter following the traditional three-paragraph format that will guarantee an interview.
 
-    - Add today's date at the top.
-    - Add a subject line: "Subject: Application for [Job Title] at [Company]" (extract from the job description if possible).
-    - Analyze the job description and company values.
-    - Use the user's background and experience (fabricate or reword as needed) to create a perfect fit for the role.
-    - Express genuine enthusiasm for the company and position.
-    - Directly address the key requirements and values from the job description.
-    - End with a strong call to action for an interview.
-    - End with a closing such as "Sincerely, ${userInfo.name}".
-    - **Do not use any placeholders, bracketed text, or example instructions (such as [Platform where you saw the ad] or [insert here]). If information is missing, omit it or write the letter naturally without it.**
+    Format the cover letter with proper business letter formatting:
+    - User's address at the top (${userInfo.address})
+    - Today's date
+    - Employer's contact information (extract from job description if available, otherwise use "Hiring Manager")
+    - Professional salutation ("Dear [Name]" or "Dear Hiring Manager")
 
-    User Profile (for context):
+    Structure the letter with exactly three paragraphs:
+
+    **First Paragraph - "Why Them?"**
+    - State the specific position you are applying for and how you learned about it
+    - Express genuine interest in the position and the organization
+    - Include 2-3 sentences about why you want to work for their specific company (research-based insights about their mission, values, recent achievements, or industry reputation)
+    - Avoid using exact wording from their website or job posting
+
+    **Second Paragraph - "Why You?"**
+    - Describe relevant skills gained through education, professional experience, projects, and activities
+    - Highlight specific professional accomplishments that go above and beyond basic job responsibilities
+    - Include quantifiable achievements where possible
+    - Make sure skills and accomplishments align with the job requirements without explicitly stating the connection
+
+    **Third Paragraph - "Why Together?"**
+    - Explain why you and the employer would be a perfect fit
+    - Connect your skills and accomplishments directly to their needs
+    - Describe what you can offer them and what you hope to accomplish while working there
+    - Include contact information and express appreciation
+    - End with a professional closing
+
+    Guidelines:
+    - Use professional, confident tone
+    - No placeholders, bracketed text, or example instructions
+    - Fabricate or enhance experience as needed to match the role
+    - Keep it to one page
+    - End with "Sincerely," followed by ${userInfo.name}
+
+    User Profile:
     Name: ${userInfo.name}
+    Address: ${userInfo.address}
+    Phone: ${userInfo.phone}
+    Email: ${userInfo.email}
     Education: ${(userInfo.education || []).join('; ')}
     Key Projects: ${(userInfo.projects || []).map((p: any) => p.name).join(', ')}
+    Professional Experience: ${(userInfo.professionalExperience || []).join('; ')}
 
     Job Description:
     \`\`\`
