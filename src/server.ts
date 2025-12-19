@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import multer from 'multer';
 import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
@@ -66,12 +67,23 @@ export function createServer() {
   const app = express();
 
   app.set('view engine', 'ejs');
-  app.set('views', path.join(__dirname, '..', 'views'));
+  const viewsPathOptions = [
+    path.join(__dirname, '..', 'views'),
+    path.join(__dirname, 'views'),
+    path.join(process.cwd(), 'views'),
+  ];
+  const viewsDir = viewsPathOptions.find((p) => fs.existsSync(p)) || viewsPathOptions[0];
+  app.set('views', viewsDir);
 
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-  const publicDir = path.join(__dirname, '..', 'public');
+  const publicPathOptions = [
+    path.join(__dirname, '..', 'public'),
+    path.join(__dirname, 'public'),
+    path.join(process.cwd(), 'public'),
+  ];
+  const publicDir = publicPathOptions.find((p) => fs.existsSync(p)) || publicPathOptions[0];
   app.use(express.static(publicDir));
 
   app.get('/', (_req, res) => {
