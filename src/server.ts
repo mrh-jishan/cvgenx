@@ -331,6 +331,106 @@ export function createServer() {
     }
   });
 
+  // Edit generation - GET page
+  app.get('/history/edit/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const generation = db.getGeneration(id);
+    
+    if (!generation) {
+      res.render('history', {
+        initialData: {
+          page: 'history',
+          history: db.listGenerations(50),
+          error: 'Generation not found.',
+        },
+      });
+      return;
+    }
+
+    res.render('edit', {
+      initialData: {
+        page: 'edit',
+        generation,
+      },
+    });
+  });
+
+  // Edit generation - POST update
+  app.post('/history/edit/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const content = (req.body.content || '').toString();
+    const generation = db.getGeneration(id);
+
+    if (!generation) {
+      res.render('history', {
+        initialData: {
+          page: 'history',
+          history: db.listGenerations(50),
+          error: 'Generation not found.',
+        },
+      });
+      return;
+    }
+
+    try {
+      db.updateGeneration(id, content);
+      const updatedGeneration = db.getGeneration(id);
+      
+      res.render('edit', {
+        initialData: {
+          page: 'edit',
+          generation: updatedGeneration,
+          success: 'Changes saved successfully!',
+        },
+      });
+    } catch (err) {
+      console.error('Failed to update generation:', err);
+      res.render('edit', {
+        initialData: {
+          page: 'edit',
+          generation,
+          error: 'Failed to save changes.',
+        },
+      });
+    }
+  });
+
+  // Delete a history entry
+  app.post('/history/delete', (req, res) => {
+    const id = Number(req.body.id);
+    if (id) {
+      try {
+        db.deleteGeneration(id);
+      } catch (err) {
+        console.error('Failed to delete generation', err);
+      }
+    }
+    const from = (req.query.from || '').toString();
+    if (from === 'history') {
+      res.render('history', {
+        initialData: {
+          page: 'history',
+          history: db.listGenerations(50),
+        },
+      });
+      return;
+    }
+    const config = db.getConfig();
+    res.render('generator', {
+      initialData: {
+        page: 'generator',
+        hasGeminiKey: Boolean(config.geminiApiKey),
+        modelName: config.modelName || DEFAULT_MODEL_NAME,
+        keyPreview: config.geminiApiKey ? `••••${config.geminiApiKey.slice(-4)}` : '',
+        resumes: db.listResumes(20),
+        latestResume: db.getLatestResume(),
+        history: db.listGenerations(10),
+        results: [],
+        success: 'Entry deleted.',
+      },
+    });
+  });
+
   return app;
 }
 

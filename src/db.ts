@@ -222,6 +222,31 @@ export class CvgenxDb {
     return rows as GenerationRecord[];
   }
 
+  getGeneration(id: number): GenerationRecord | undefined {
+    if (!id) return undefined;
+    const row = this.db
+      .prepare(
+        `SELECT id, type, job_description as jobDescription, output, resume_id as resumeId, profile_id as profileId, created_at as createdAt
+         FROM generations
+         WHERE id = ?
+         LIMIT 1`,
+      )
+      .get(id);
+    return row as GenerationRecord | undefined;
+  }
+
+  updateGeneration(id: number, output: string) {
+    if (!id) return;
+    this.db
+      .prepare(`UPDATE generations SET output = @output WHERE id = @id`)
+      .run({ id, output });
+  }
+
+  deleteGeneration(id: number) {
+    if (!id) return;
+    this.db.prepare(`DELETE FROM generations WHERE id = ?`).run(id);
+  }
+
   addProfile(name: string, data: any): number {
     const result = this.db
       .prepare(

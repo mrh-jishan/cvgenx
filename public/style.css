@@ -339,6 +339,54 @@ button {
   cursor: pointer;
 }
 
+.ghost.danger {
+  border-color: #fca5a5;
+  color: #b91c1c;
+  background: #fff5f5;
+}
+
+.ghost.success {
+  border-color: #a7f3d0;
+  color: #065f46;
+  background: #ecfdf3;
+}
+
+.ghost.icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.ghost.small {
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.format-buttons {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.format-buttons .ghost {
+  min-width: 46px;
+  justify-content: center;
+}
+
+.action-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pill-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .upload-zone {
   border: 1px dashed var(--border);
   border-radius: 16px;

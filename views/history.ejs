@@ -68,14 +68,19 @@
                   </div>
                   <div class="history-output collapsed" id="hist-out-<%= item.id %>"><pre><%- item.output || '' %></pre></div>
                   <div class="history-actions">
-                    <button class="ghost" type="button" data-toggle-output="hist-out-<%= item.id %>">Expand</button>
-                    <button class="ghost" type="button" data-copy-text="<%= encodeURIComponent(item.output || '') %>">Copy</button>
-                    <form class="download-form" action="/download" method="post" target="_blank" style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="ghost icon small" type="button" data-toggle-output="hist-out-<%= item.id %>">Expand</button>
+                    <a class="ghost icon small" href="/history/edit/<%= item.id %>">Edit</a>
+                    <button class="ghost icon small success" type="button" data-copy-text="<%= encodeURIComponent(item.output || '') %>">Copy</button>
+                    <form class="download-form action-group" action="/history/delete?from=history" method="post">
+                      <input type="hidden" name="id" value="<%= item.id %>" />
+                      <button class="ghost icon small danger" type="submit">Delete</button>
+                    </form>
+                    <form class="download-form format-buttons" action="/download" method="post" target="_blank">
                       <input type="hidden" name="filename" value="cvgenx-<%= item.type %>">
                       <textarea name="content" hidden><%- item.output %></textarea>
-                      <button class="ghost" type="submit" name="format" value="md">.md</button>
-                      <button class="ghost" type="submit" name="format" value="pdf">.pdf</button>
-                      <button class="ghost" type="submit" name="format" value="docx">.docx</button>
+                      <button class="ghost icon small" type="submit" name="format" value="md">.md</button>
+                      <button class="ghost icon small" type="submit" name="format" value="pdf">.pdf</button>
+                      <button class="ghost icon small" type="submit" name="format" value="docx">.docx</button>
                     </form>
                   </div>
                 </div>

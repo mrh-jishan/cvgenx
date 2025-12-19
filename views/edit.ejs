@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVGenX Studio - Edit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body data-page="edit">
+    <div class="halo halo-1"></div>
+    <div class="halo halo-2"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">CV</div>
+        <div>
+          <p class="eyebrow">CVGenX</p>
+          <p class="subtitle">AI-powered resume + cover letters</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-btn" href="/">Generate</a>
+        <a class="nav-btn" href="/settings">Settings</a>
+        <a class="nav-btn" href="/history">History</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section id="editPage" class="panel active">
+        <div class="panel-hero">
+          <div>
+            <p class="eyebrow">Edit</p>
+            <h1>Edit <%= initialData.generation.type === 'coverLetter' ? 'Cover Letter' : 'Resume' %></h1>
+            <p class="muted">Make changes to your generated content and save or download.</p>
+          </div>
+          <div class="badge-stack">
+            <a class="ghost" href="/history">← Back to History</a>
+          </div>
+        </div>
+
+        <% if (initialData.error) { %>
+          <div class="card error-card">
+            <p class="error"><%= initialData.error %></p>
+          </div>
+        <% } %>
+
+        <% if (initialData.success) { %>
+          <div class="card success-card">
+            <p class="success"><%= initialData.success %></p>
+          </div>
+        <% } %>
+
+        <div class="card span-2">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Job Description</p>
+              <p class="muted"><%= initialData.generation.jobDescription %></p>
+            </div>
+          </div>
+
+          <form action="/history/edit/<%= initialData.generation.id %>" method="post">
+            <div class="form-group">
+              <label for="content">
+                <strong>Content</strong>
+                <span class="hint">Edit the markdown content below</span>
+              </label>
+              <textarea 
+                id="content" 
+                name="content" 
+                rows="20"
+                style="font-family: monospace; font-size: 13px;"
+                required><%= initialData.generation.output %></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <button type="submit" class="primary">Save Changes</button>
+              <a href="/history" class="ghost">Cancel</a>
+            </div>
+          </form>
+
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+            <p class="eyebrow">Download</p>
+            <p class="hint" style="margin-bottom: 12px;">Download the current content (changes must be saved first)</p>
+            <form class="download-form format-buttons" action="/download" method="post" target="_blank" style="display: flex; gap: 8px;">
+              <input type="hidden" name="filename" value="cvgenx-<%= initialData.generation.type %>-edit">
+              <textarea name="content" hidden><%= initialData.generation.output %></textarea>
+              <button class="ghost icon" type="submit" name="format" value="md">.md</button>
+              <button class="ghost icon" type="submit" name="format" value="pdf">.pdf</button>
+              <button class="ghost icon" type="submit" name="format" value="docx">.docx</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
