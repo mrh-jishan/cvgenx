@@ -19,7 +19,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-assets.js",
     "start": "npm run build && node dist/index.js",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit",
