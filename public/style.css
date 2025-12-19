@@ -340,17 +340,42 @@ button {
 
 .upload-zone {
   border: 1px dashed var(--border);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  display: grid;
+  gap: 10px;
+  align-items: center;
 }
 
 .file-input {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
+  cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.file-input::before {
+  content: 'Browse files';
+  display: inline-block;
+  background: linear-gradient(135deg, #5de4c7, #7aa5ff);
+  color: #0c0f16;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+.file-hint {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .chip-row {
@@ -440,7 +465,7 @@ button {
   border-radius: 12px;
   padding: 12px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
@@ -450,10 +475,14 @@ button {
 }
 
 .mini-pill {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  padding: 6px 10px;
-  border: 1px solid var(--border);
+  justify-self: start;
+  background: linear-gradient(135deg, rgba(93, 228, 199, 0.15), rgba(122, 165, 255, 0.15));
+  border-radius: 12px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e8edf5;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 @media (max-width: 800px) {
