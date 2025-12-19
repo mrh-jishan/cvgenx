@@ -1,3 +1,11 @@
+# [1.31.0](https://github.com/mrh-jishan/cvgenx/compare/v1.30.0...v1.31.0) (2025-12-19)
+
+
+### Features
+
+* **config:** fixed ui ([adf70c8](https://github.com/mrh-jishan/cvgenx/commit/adf70c87070a03098412c5470b38a8554e92ed21))
+* **config:** remove config ([c46196e](https://github.com/mrh-jishan/cvgenx/commit/c46196e592ca61565adc340fd3cfc0478091e9c4))
+
 # [1.30.0](https://github.com/mrh-jishan/cvgenx/compare/v1.29.0...v1.30.0) (2025-12-19)
 
 
