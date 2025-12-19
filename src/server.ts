@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import multer from 'multer';
 import pdf from 'pdf-parse';
+import mammoth from 'mammoth';
 import { db } from './db';
 import { Provider, ContentType } from './ai';
 import { PromptType, buildPrompt } from './ai/prompt';
@@ -17,6 +18,14 @@ async function extractResumeText(file: Express.Multer.File): Promise<string> {
   if (file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf')) {
     const parsed = await pdf(file.buffer);
     return parsed.text?.trim() || '';
+  }
+  if (
+    file.mimetype ===
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    file.originalname.toLowerCase().endsWith('.docx')
+  ) {
+    const result = await mammoth.extractRawText({ buffer: file.buffer });
+    return result.value?.trim() || '';
   }
   return file.buffer.toString('utf8').trim();
 }
