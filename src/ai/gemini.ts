@@ -19,7 +19,7 @@ export class GeminiProvider implements AIProvider {
       model,
       contents: prompt.toString(),
     });
-    return response.text!;
+    return response.text || '';
   }
 }
 

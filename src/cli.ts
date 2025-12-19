@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { createWriteStream } from 'fs';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -7,9 +6,9 @@ import { Provider, ContentType } from './ai';
 import { PromptType, buildPrompt } from './ai/prompt';
 import { handleAuthFlow } from './auth-flow';
 import readline from 'readline';
-import { exec, spawn } from 'child_process';
 import { db } from './db';
 import { DEFAULT_MODEL_NAME } from './constants';
+import { convertMarkdownToPdf, convertMarkdownToDocx } from './converter';
 
 function showLoader(message: string) {
   const frames = ['|', '/', '-', '\\'];
@@ -40,42 +39,11 @@ async function getJobDescriptionFromStdin(): Promise<string> {
 }
 
 async function convertMarkdownToFormat(mdFile: string, outFile: string, format: string) {
+  const mdContent = await fs.readFile(mdFile, 'utf8');
   if (format === 'pdf') {
-    await new Promise((resolve, reject) => {
-      const outStream = createWriteStream(outFile);
-
-      const proc = spawn(
-        'npx',
-        [
-          'md-to-pdf',
-          mdFile,
-          '--pdf-options',
-          '{"format":"Letter","margin":"10mm","printBackground":true}',
-        ],
-        {
-          stdio: ['inherit', 'pipe', 'inherit'], // send stdout to us, keep stderr live
-        },
-      );
-
-      proc.stdout.pipe(outStream);
-
-      proc.on('error', reject);
-
-      proc.on('close', (code) => {
-        if (code === 0) resolve(undefined);
-        else reject(new Error(`md-to-pdf failed with code ${code}`));
-      });
-    });
+    await convertMarkdownToPdf(mdContent, outFile);
   } else if (format === 'docx') {
-    await new Promise((resolve, reject) => {
-      exec(
-        `pandoc "${mdFile}" -o "${outFile}" --from markdown --to docx --variable=geometry:margin=1in --variable=fontsize:12pt --variable=linestretch:1.2`,
-        (err) => {
-          if (err) reject(err);
-          else resolve(undefined);
-        },
-      );
-    });
+    await convertMarkdownToDocx(mdContent, outFile);
   }
 }
 

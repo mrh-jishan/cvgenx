@@ -287,6 +287,50 @@ export function createServer() {
     });
   });
 
+  // Download generated content as md/pdf/docx
+  app.post('/download', async (req, res) => {
+    const { format = 'md', filename = 'cvgenx', content = '' } = req.body;
+    
+    if (!content) {
+      res.status(400).send('Missing content');
+      return;
+    }
+
+    try {
+      // Handle markdown download (no conversion needed)
+      if (format === 'md') {
+        res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}.md"`);
+        res.send(content);
+        return;
+      }
+
+      // Import converter module for PDF and DOCX
+      const { markdownToPdfBuffer, markdownToDocxBuffer } = await import('./converter');
+
+      if (format === 'pdf') {
+        const pdfBuffer = await markdownToPdfBuffer(content);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}.pdf"`);
+        res.send(pdfBuffer);
+        return;
+      }
+
+      if (format === 'docx') {
+        const docxBuffer = await markdownToDocxBuffer(content);
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}.docx"`);
+        res.send(docxBuffer);
+        return;
+      }
+
+      res.status(400).send('Invalid format. Use md, pdf, or docx');
+    } catch (err) {
+      console.error('Download error:', err);
+      res.status(500).send('Download failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    }
+  });
+
   return app;
 }
 

@@ -72,30 +72,14 @@ document.querySelectorAll('[data-copy-text]').forEach((btn) => {
   });
 })();
 
-// Download buttons: allow saving content as md/pdf/docx (text-based)
-document.querySelectorAll('[data-download-type]').forEach((btn) => {
+// Expand/collapse long history outputs
+document.querySelectorAll('[data-toggle-output]').forEach((btn) => {
   btn.addEventListener('click', () => {
-    const type = btn.getAttribute('data-download-type');
-    const encoded = btn.getAttribute('data-download-text') || '';
-    const text = decodeURIComponent(encoded);
-    const name = btn.getAttribute('data-filename') || 'cvgenx';
-    let ext = 'md';
-    let mime = 'text/markdown';
-    if (type === 'pdf') {
-      ext = 'pdf';
-      mime = 'application/pdf';
-    } else if (type === 'docx') {
-      ext = 'docx';
-      mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    }
-    const blob = new Blob([text], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${name}.${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    const targetId = btn.getAttribute('data-toggle-output');
+    if (!targetId) return;
+    const box = document.getElementById(targetId);
+    if (!box) return;
+    const collapsed = box.classList.toggle('collapsed');
+    btn.textContent = collapsed ? 'Expand' : 'Collapse';
   });
 });

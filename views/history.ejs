@@ -55,11 +55,29 @@
             <% } else { %>
               <% initialData.history.forEach(function(item){ %>
                 <div class="history-item">
-                  <div>
-                    <strong><%= item.type %></strong>
-                    <p class="history-meta"><%= (item.jobDescription || '').slice(0,160) %></p>
+                  <div class="row" style="justify-content: space-between; align-items: flex-start;">
+                    <div>
+                      <p class="eyebrow"><%= item.type === 'coverLetter' ? 'Cover letter' : 'Resume' %></p>
+                      <h3 style="margin: 4px 0;">Tailored draft</h3>
+                      <p class="history-meta"><%= (item.jobDescription || '').slice(0,220) %></p>
+                      <p class="hint" style="margin-top:6px;">
+                        Resume source: <%= item.resumeId ? ('Stored resume #' + item.resumeId) : 'Latest cached resume' %>
+                      </p>
+                    </div>
+                    <div class="mini-pill"><%= new Date(item.createdAt).toLocaleString() %></div>
                   </div>
-                  <div class="mini-pill"><%= new Date(item.createdAt).toLocaleString() %></div>
+                  <div class="history-output collapsed" id="hist-out-<%= item.id %>"><pre><%- item.output || '' %></pre></div>
+                  <div class="history-actions">
+                    <button class="ghost" type="button" data-toggle-output="hist-out-<%= item.id %>">Expand</button>
+                    <button class="ghost" type="button" data-copy-text="<%= encodeURIComponent(item.output || '') %>">Copy</button>
+                    <form class="download-form" action="/download" method="post" target="_blank" style="display:flex; gap:8px; flex-wrap:wrap;">
+                      <input type="hidden" name="filename" value="cvgenx-<%= item.type %>">
+                      <textarea name="content" hidden><%- item.output %></textarea>
+                      <button class="ghost" type="submit" name="format" value="md">.md</button>
+                      <button class="ghost" type="submit" name="format" value="pdf">.pdf</button>
+                      <button class="ghost" type="submit" name="format" value="docx">.docx</button>
+                    </form>
+                  </div>
                 </div>
               <% }) %>
             <% } %>

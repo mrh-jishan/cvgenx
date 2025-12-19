@@ -116,13 +116,19 @@
             <% } else { %>
               <% initialData.results.forEach(function(r){ %>
                 <div class="result-card">
-                  <div class="row" style="justify-content: space-between;">
-                    <h3><%= r.type === 'coverLetter' ? 'Cover letter' : 'Resume' %></h3>
+                  <div class="row" style="justify-content: space-between; align-items: flex-start;">
+                    <div>
+                      <h3><%= r.type === 'coverLetter' ? 'Cover letter' : 'Resume' %></h3>
+                    </div>
                     <div class="chip-row">
                       <button class="ghost" type="button" data-copy-text="<%= encodeURIComponent(r.content || '') %>">Copy</button>
-                      <button class="ghost" type="button" data-download-type="md" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.md</button>
-                      <button class="ghost" type="button" data-download-type="pdf" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.pdf</button>
-                      <button class="ghost" type="button" data-download-type="docx" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.docx</button>
+                      <form class="download-form" action="/download" method="post" target="_blank" style="display:flex; gap:8px;">
+                        <input type="hidden" name="filename" value="cvgenx-<%= r.type %>">
+                        <textarea name="content" hidden><%- r.content %></textarea>
+                        <button class="ghost" type="submit" name="format" value="md">.md</button>
+                        <button class="ghost" type="submit" name="format" value="pdf">.pdf</button>
+                        <button class="ghost" type="submit" name="format" value="docx">.docx</button>
+                      </form>
                     </div>
                   </div>
                   <pre><%- r.content %></pre>
@@ -145,16 +151,35 @@
             <% } else { %>
               <% initialData.history.forEach(function(item){ %>
                 <div class="history-item">
-                  <div>
-                    <strong><%= item.type %></strong>
-                    <p class="history-meta"><%= (item.jobDescription || '').slice(0, 160) %></p>
+                  <div class="row" style="justify-content: space-between; align-items: flex-start;">
+                    <div>
+                      <p class="eyebrow"><%= item.type === 'coverLetter' ? 'Cover letter' : 'Resume' %></p>
+                      <h3 style="margin: 4px 0;">Matched to a past job</h3>
+                      <p class="history-meta"><%= (item.jobDescription || '').slice(0, 220) %></p>
+                      <p class="hint" style="margin-top:6px;">
+                        Resume source: <%= item.resumeId ? ('Stored resume #' + item.resumeId) : 'Latest cached resume' %>
+                      </p>
+                    </div>
+                    <div class="mini-pill"><%= new Date(item.createdAt).toLocaleString() %></div>
                   </div>
-                  <form method="post" action="/generate">
-                    <input type="hidden" name="jobDescription" value="<%- item.jobDescription %>" />
-                    <input type="hidden" name="type" value="<%= item.type %>" />
-                    <input type="hidden" name="resumeId" value="<%= item.resumeId || '' %>" />
-                    <button class="ghost" type="submit">Reuse</button>
-                  </form>
+                  <div class="history-output collapsed" id="hist-out-<%= item.id %>"><pre><%- item.output || '' %></pre></div>
+                  <div class="history-actions">
+                    <button class="ghost" type="button" data-toggle-output="hist-out-<%= item.id %>">Expand</button>
+                    <form method="post" action="/generate" style="display:flex; gap:8px; flex-wrap:wrap;">
+                      <input type="hidden" name="jobDescription" value="<%- item.jobDescription %>" />
+                      <input type="hidden" name="type" value="<%= item.type %>" />
+                      <input type="hidden" name="resumeId" value="<%= item.resumeId || '' %>" />
+                      <button class="primary" type="submit">Reuse inputs</button>
+                    </form>
+                    <button class="ghost" type="button" data-copy-text="<%= encodeURIComponent(item.output || '') %>">Copy</button>
+                    <form class="download-form" action="/download" method="post" target="_blank" style="display:flex; gap:8px; flex-wrap:wrap;">
+                      <input type="hidden" name="filename" value="cvgenx-<%= item.type %>">
+                      <textarea name="content" hidden><%- item.output %></textarea>
+                      <button class="ghost" type="submit" name="format" value="md">.md</button>
+                      <button class="ghost" type="submit" name="format" value="pdf">.pdf</button>
+                      <button class="ghost" type="submit" name="format" value="docx">.docx</button>
+                    </form>
+                  </div>
                 </div>
               <% }) %>
             <% } %>
