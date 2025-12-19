@@ -1,32 +1,15 @@
 import fs from 'fs/promises';
 import { createWriteStream } from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Provider, ContentType } from './ai';
 import { PromptType, buildPrompt } from './ai/prompt';
-import os from 'os';
-import { editUserTemplate } from './user-template';
 import { handleAuthFlow } from './auth-flow';
 import readline from 'readline';
 import { exec, spawn } from 'child_process';
 import { db } from './db';
 import { DEFAULT_MODEL_NAME } from './constants';
-
-const EMPTY_USER_TEMPLATE = {
-  name: '',
-  phone: '',
-  email: '',
-  linkedin: '',
-  github: '',
-  portfolio: '',
-  address: '',
-  baseSummary: '',
-  education: [] as string[],
-  projects: [] as Array<{ name?: string; url?: string; description?: string }>,
-  professionalExperience: [] as string[],
-};
 
 function showLoader(message: string) {
   const frames = ['|', '/', '-', '\\'];
@@ -39,25 +22,6 @@ function showLoader(message: string) {
     clearInterval(interval);
     process.stdout.write('\r' + ' '.repeat(message.length + 2) + '\r');
   };
-}
-
-function getUserTemplateExample(format: 'json' | 'yaml') {
-  if (format === 'json') {
-    return JSON.stringify(EMPTY_USER_TEMPLATE, null, 2);
-  } else {
-    return yaml.dump(EMPTY_USER_TEMPLATE);
-  }
-}
-
-async function loadUserInfo() {
-  // Always load from ~/.cvgenx.user.json for consistency
-  const userFile = path.join(os.homedir(), '.cvgenx.user.json');
-  try {
-    const content = await fs.readFile(userFile, 'utf8');
-    return JSON.parse(content);
-  } catch {
-    return {};
-  }
 }
 
 async function getJobDescriptionFromStdin(): Promise<string> {
@@ -131,7 +95,7 @@ function getShortTimestamp() {
 export async function mainCli() {
   const argv = await yargs(hideBin(process.argv))
     .usage(
-      `Usage: $0 <job-description-file.txt> [options]\n\nExamples:\n  $0 job.txt --type resume\n  $0 job.txt --type coverLetter\n  $0 job.txt --type both --user-template user.yaml\n  $0 --auth`,
+      `Usage: $0 <job-description-file.txt> [options]\n\nExamples:\n  $0 job.txt --type resume\n  $0 job.txt --type coverLetter\n  $0 job.txt --type both\n  $0 --auth`,
     )
     .option('type', {
       alias: 't',
@@ -146,31 +110,14 @@ export async function mainCli() {
       default: 'md',
       type: 'string',
     })
-    .option('user-template', {
-      alias: 'u',
-      describe: 'Path to user info template (json/yaml)',
-      type: 'string',
-    })
     .option('auth', {
       describe: 'Setup API keys interactively',
       type: 'boolean',
     })
-    .option('show-user-template', {
-      describe: 'Show example user template (json or yaml)',
-      choices: ['json', 'yaml'],
-      type: 'string',
-      coerce: (val: any) => (val === '' || val === undefined ? 'json' : val),
-    })
-    .option('edit-user-template', {
-      describe: 'Create or update a user template file interactively',
-      type: 'string',
-    })
     .check((argv) => {
       if (
         !argv.auth &&
-        !argv.type &&
-        !argv['show-user-template'] &&
-        argv['edit-user-template'] === undefined
+        !argv.type
       ) {
         throw new Error('Missing required argument: type');
       }
@@ -182,32 +129,6 @@ export async function mainCli() {
 
   if (argv.auth) {
     await handleAuthFlow();
-    return;
-  }
-
-  if (argv['show-user-template'] !== undefined) {
-    let format: 'json' | 'yaml' = 'json';
-    if (argv['show-user-template'] === 'yaml') format = 'yaml';
-    // Always read from ~/.cvgenx.user.json and convert to YAML if needed
-    const userFile = path.join(os.homedir(), `.cvgenx.user.json`);
-    try {
-      const content = await fs.readFile(userFile, 'utf8');
-      if (format === 'json') {
-        console.log(content);
-      } else {
-        const userObj = JSON.parse(content);
-        console.log(yaml.dump(userObj));
-      }
-    } catch {
-      // Fallback to example
-      console.log(getUserTemplateExample(format));
-    }
-    return;
-  }
-
-  if (argv['edit-user-template'] !== undefined) {
-    const fileArg = argv['edit-user-template'];
-    await editUserTemplate(fileArg && fileArg !== '' ? fileArg : undefined);
     return;
   }
 
@@ -223,8 +144,8 @@ export async function mainCli() {
     jobDescription = await fs.readFile(jobDescriptionFilePath, 'utf8');
   }
 
-  const userInfo = await loadUserInfo();
   const config = db.getConfig();
+  const userInfo = config.userInfo || {};
   const provider = new Provider(config.geminiApiKey, config.modelName || DEFAULT_MODEL_NAME);
   if (!config.geminiApiKey) {
     console.log('Gemini API key is not set. Please open the web UI and save it under Settings.');
@@ -244,13 +165,13 @@ export async function mainCli() {
       userInfo,
     );
     stopLoader();
-    const resumeMdFile = makeFileName(userInfo.name, 'resume', 'md');
-    const coverLetterMdFile = makeFileName(userInfo.name, 'coverLetter', 'md');
+    const resumeMdFile = makeFileName(userInfo.name || 'cvgenx', 'resume', 'md');
+    const coverLetterMdFile = makeFileName(userInfo.name || 'cvgenx', 'coverLetter', 'md');
     await fs.writeFile(resumeMdFile, resumeContent, { encoding: 'utf8' });
     await fs.writeFile(coverLetterMdFile, coverLetterContent, { encoding: 'utf8' });
     if (outputFormat === 'pdf' || outputFormat === 'docx') {
-      const resumeOutFile = makeFileName(userInfo.name, 'resume', outputFormat);
-      const coverLetterOutFile = makeFileName(userInfo.name, 'coverLetter', outputFormat);
+      const resumeOutFile = makeFileName(userInfo.name || 'cvgenx', 'resume', outputFormat);
+      const coverLetterOutFile = makeFileName(userInfo.name || 'cvgenx', 'coverLetter', outputFormat);
       await convertMarkdownToFormat(resumeMdFile, resumeOutFile, outputFormat);
       await convertMarkdownToFormat(coverLetterMdFile, coverLetterOutFile, outputFormat);
       console.log(`Saved to ${resumeOutFile}`);
@@ -264,7 +185,7 @@ export async function mainCli() {
     const prompt = buildPrompt(userInfo, jobDescription, type);
     const content = await provider.generateContent(prompt, type as ContentType, userInfo);
     stopLoader();
-    const mdFile = makeFileName(userInfo.name, type, 'md');
+    const mdFile = makeFileName(userInfo.name || 'cvgenx', type, 'md');
     await fs.writeFile(mdFile, content, { encoding: 'utf8' });
     if (outputFormat === 'pdf' || outputFormat === 'docx') {
       const outFile = makeFileName(userInfo.name, type, outputFormat);
