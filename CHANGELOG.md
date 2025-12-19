@@ -1,3 +1,11 @@
+# [1.33.0](https://github.com/mrh-jishan/cvgenx/compare/v1.32.0...v1.33.0) (2025-12-19)
+
+
+### Features
+
+* **config:** try npmjs auth ([5f4181a](https://github.com/mrh-jishan/cvgenx/commit/5f4181a21ca4665057b79d2a8a296b40b5e5da9b))
+* **config:** try npmjs auth ([e03c1f5](https://github.com/mrh-jishan/cvgenx/commit/e03c1f52a8aea714bb2be84dc2eb7fb253daf6b4))
+
 # [1.32.0](https://github.com/mrh-jishan/cvgenx/compare/v1.31.0...v1.32.0) (2025-12-19)
 
 
