@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/mrh-jishan/cvgenx/compare/v1.31.0...v1.32.0) (2025-12-19)
+
+
+### Features
+
+* **config:** remove template ([5c28030](https://github.com/mrh-jishan/cvgenx/commit/5c280302d4a1832eea3d3e5d3cf8a985592c9e0b))
+
 # [1.31.0](https://github.com/mrh-jishan/cvgenx/compare/v1.30.0...v1.31.0) (2025-12-19)
 
 
