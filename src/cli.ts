@@ -40,18 +40,22 @@ async function getJobDescriptionFromStdin(): Promise<string> {
 }
 
 async function convertMarkdownToFormat(mdFile: string, outFile: string, format: string) {
-  if (format === 'pdf') {  
-      await new Promise((resolve, reject) => {
+  if (format === 'pdf') {
+    await new Promise((resolve, reject) => {
       const outStream = createWriteStream(outFile);
 
-      const proc = spawn('npx', [
-        'md-to-pdf',
-        mdFile,
-        '--pdf-options',
-        '{"format":"Letter","margin":"10mm","printBackground":true}'
-      ], {
-        stdio: ['inherit', 'pipe', 'inherit'] // send stdout to us, keep stderr live
-      });
+      const proc = spawn(
+        'npx',
+        [
+          'md-to-pdf',
+          mdFile,
+          '--pdf-options',
+          '{"format":"Letter","margin":"10mm","printBackground":true}',
+        ],
+        {
+          stdio: ['inherit', 'pipe', 'inherit'], // send stdout to us, keep stderr live
+        },
+      );
 
       proc.stdout.pipe(outStream);
 
@@ -62,8 +66,7 @@ async function convertMarkdownToFormat(mdFile: string, outFile: string, format: 
         else reject(new Error(`md-to-pdf failed with code ${code}`));
       });
     });
-
-  } else if (format === 'docx') {   
+  } else if (format === 'docx') {
     await new Promise((resolve, reject) => {
       exec(
         `pandoc "${mdFile}" -o "${outFile}" --from markdown --to docx --variable=geometry:margin=1in --variable=fontsize:12pt --variable=linestretch:1.2`,
@@ -115,10 +118,7 @@ export async function mainCli() {
       type: 'boolean',
     })
     .check((argv) => {
-      if (
-        !argv.auth &&
-        !argv.type
-      ) {
+      if (!argv.auth && !argv.type) {
         throw new Error('Missing required argument: type');
       }
       return true;
@@ -171,7 +171,11 @@ export async function mainCli() {
     await fs.writeFile(coverLetterMdFile, coverLetterContent, { encoding: 'utf8' });
     if (outputFormat === 'pdf' || outputFormat === 'docx') {
       const resumeOutFile = makeFileName(userInfo.name || 'cvgenx', 'resume', outputFormat);
-      const coverLetterOutFile = makeFileName(userInfo.name || 'cvgenx', 'coverLetter', outputFormat);
+      const coverLetterOutFile = makeFileName(
+        userInfo.name || 'cvgenx',
+        'coverLetter',
+        outputFormat,
+      );
       await convertMarkdownToFormat(resumeMdFile, resumeOutFile, outputFormat);
       await convertMarkdownToFormat(coverLetterMdFile, coverLetterOutFile, outputFormat);
       console.log(`Saved to ${resumeOutFile}`);

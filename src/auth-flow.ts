@@ -19,7 +19,5 @@ export async function handleAuthFlow() {
   }
   rl.close();
   db.saveConfig({ geminiApiKey: gemini });
-  console.log(
-    'API key saved. You can now generate resumes and cover letters.',
-  );
+  console.log('API key saved. You can now generate resumes and cover letters.');
 }

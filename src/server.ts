@@ -20,8 +20,7 @@ async function extractResumeText(file: Express.Multer.File): Promise<string> {
     return parsed.text?.trim() || '';
   }
   if (
-    file.mimetype ===
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
     file.originalname.toLowerCase().endsWith('.docx')
   ) {
     const result = await mammoth.extractRawText({ buffer: file.buffer });
@@ -67,7 +66,7 @@ export function createServer() {
   const app = express();
 
   app.set('view engine', 'ejs');
-  app.set('views', path.join(process.cwd(), 'views'));
+  app.set('views', path.join(__dirname, '..', 'views'));
 
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
@@ -203,8 +202,9 @@ export function createServer() {
       resumeId = db.addResume(req.file.originalname, req.file.mimetype, resumeText);
     }
     if (!resumeText) {
-      const fallback =
-        resumeIdFromForm ? db.getResume(resumeIdFromForm)?.content : db.getLatestResume()?.content;
+      const fallback = resumeIdFromForm
+        ? db.getResume(resumeIdFromForm)?.content
+        : db.getLatestResume()?.content;
       resumeText = normalizeResumeText(fallback || '');
     }
 

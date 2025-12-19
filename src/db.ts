@@ -65,7 +65,11 @@ export class CvgenxDb {
         )`,
       )
       .run();
-    this.addColumnIfMissing('configs', 'model_name', "ALTER TABLE configs ADD COLUMN model_name TEXT");
+    this.addColumnIfMissing(
+      'configs',
+      'model_name',
+      'ALTER TABLE configs ADD COLUMN model_name TEXT',
+    );
 
     this.db
       .prepare(
@@ -97,7 +101,7 @@ export class CvgenxDb {
     this.addColumnIfMissing(
       'generations',
       'profile_id',
-      "ALTER TABLE generations ADD COLUMN profile_id INTEGER",
+      'ALTER TABLE generations ADD COLUMN profile_id INTEGER',
     );
 
     this.db
@@ -196,7 +200,13 @@ export class CvgenxDb {
         `INSERT INTO generations (type, job_description, output, resume_id, profile_id)
          VALUES (@type, @jobDescription, @output, @resumeId, @profileId)`,
       )
-      .run({ type, jobDescription, output, resumeId: resumeId ?? null, profileId: profileId ?? null });
+      .run({
+        type,
+        jobDescription,
+        output,
+        resumeId: resumeId ?? null,
+        profileId: profileId ?? null,
+      });
     return Number(result.lastInsertRowid);
   }
 
