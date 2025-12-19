@@ -1,3 +1,11 @@
+# [1.34.0](https://github.com/mrh-jishan/cvgenx/compare/v1.33.0...v1.34.0) (2025-12-19)
+
+
+### Features
+
+* **config:** added worf file parser ([51e81b9](https://github.com/mrh-jishan/cvgenx/commit/51e81b9c7c98af1e0f247dfa863a765958b12bc7))
+* **config:** added worf file parser ([8d68491](https://github.com/mrh-jishan/cvgenx/commit/8d68491a29c7965ad0c708e142e6152c72ecbd94))
+
 # [1.33.0](https://github.com/mrh-jishan/cvgenx/compare/v1.32.0...v1.33.0) (2025-12-19)
 
 
