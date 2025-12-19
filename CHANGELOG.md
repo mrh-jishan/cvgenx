@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/mrh-jishan/cvgenx/compare/v1.29.0...v1.30.0) (2025-12-19)
+
+
+### Features
+
+* **config:** setup as webserver ([6174e5d](https://github.com/mrh-jishan/cvgenx/commit/6174e5da24c05199c323371d9e77871a124f84d4))
+
 # [1.29.0](https://github.com/mrh-jishan/cvgenx/compare/v1.28.0...v1.29.0) (2025-07-08)
 
 
