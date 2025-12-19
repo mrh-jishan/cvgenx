@@ -4,7 +4,6 @@ import os from 'os';
 import yaml from 'js-yaml';
 
 export async function editUserTemplate(filePath?: string) {
-  const { saveUserTemplatePath } = await import('./config');
   const readline = await import('readline');
   const userFile = path.join(os.homedir(), `.cvgenx.user.json`);
   if (filePath) {
@@ -20,10 +19,7 @@ export async function editUserTemplate(filePath?: string) {
       throw new Error('Unsupported file format. Use .json or .yaml');
     }
     await fs.writeFile(userFile, JSON.stringify(userObj, null, 2), { encoding: 'utf8' });
-    await saveUserTemplatePath(userFile);
-    console.log(
-      `Copied ${filePath} to ${userFile} (converted to JSON) and set as default user template.`,
-    );
+    console.log(`Copied ${filePath} to ${userFile} (converted to JSON).`);
     return;
   }
   // Interactive prompt for all fields
@@ -128,7 +124,5 @@ export async function editUserTemplate(filePath?: string) {
   user.baseSummary = await ask('Base summary', user.baseSummary || '');
   rl.close();
   await fs.writeFile(userFile, JSON.stringify(user, null, 2), { encoding: 'utf8' });
-  await saveUserTemplatePath(userFile);
   console.log(`User template saved to ${userFile}`);
-  console.log(`Default user template set to ${userFile}`);
 }

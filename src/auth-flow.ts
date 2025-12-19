@@ -1,22 +1,8 @@
-import { saveConfig } from './config';
 import { Provider } from './ai';
-import os from 'os';
-import path from 'path';
-import fs from 'fs/promises';
+import { db } from './db';
 
 export async function handleAuthFlow() {
-  // Load existing config if present
-  const homeEnvPath = path.join(os.homedir(), '.cvgenx.env');
-  let existingGemini = '';
-  try {
-    const envContent = await fs.readFile(homeEnvPath, 'utf8');
-    for (const line of envContent.split('\n')) {
-      if (line.startsWith('GEMINI_API_KEY='))
-        existingGemini = line.replace('GEMINI_API_KEY=', '').trim();
-    }
-  } catch {
-    // ignore missing config file
-  }
+  const existingGemini = db.getConfig().geminiApiKey || '';
   const readline = await import('readline');
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string, def: string) =>
@@ -32,7 +18,7 @@ export async function handleAuthFlow() {
     console.log('Invalid Gemini API key. Please try again.');
   }
   rl.close();
-  await saveConfig(gemini);
+  db.saveConfig({ geminiApiKey: gemini });
   console.log(
     'API key saved. You can now generate resumes and cover letters.',
   );
