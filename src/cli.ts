@@ -6,12 +6,27 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Provider, ContentType } from './ai';
 import { PromptType, buildPrompt } from './ai/prompt';
-import { DEFAULT_USER_BASE_INFO } from './user-base-info';
 import os from 'os';
 import { editUserTemplate } from './user-template';
 import { handleAuthFlow } from './auth-flow';
 import readline from 'readline';
 import { exec, spawn } from 'child_process';
+import { db } from './db';
+import { DEFAULT_MODEL_NAME } from './constants';
+
+const EMPTY_USER_TEMPLATE = {
+  name: '',
+  phone: '',
+  email: '',
+  linkedin: '',
+  github: '',
+  portfolio: '',
+  address: '',
+  baseSummary: '',
+  education: [] as string[],
+  projects: [] as Array<{ name?: string; url?: string; description?: string }>,
+  professionalExperience: [] as string[],
+};
 
 function showLoader(message: string) {
   const frames = ['|', '/', '-', '\\'];
@@ -28,9 +43,9 @@ function showLoader(message: string) {
 
 function getUserTemplateExample(format: 'json' | 'yaml') {
   if (format === 'json') {
-    return JSON.stringify(DEFAULT_USER_BASE_INFO, null, 2);
+    return JSON.stringify(EMPTY_USER_TEMPLATE, null, 2);
   } else {
-    return yaml.dump(DEFAULT_USER_BASE_INFO);
+    return yaml.dump(EMPTY_USER_TEMPLATE);
   }
 }
 
@@ -41,7 +56,7 @@ async function loadUserInfo() {
     const content = await fs.readFile(userFile, 'utf8');
     return JSON.parse(content);
   } catch {
-    return DEFAULT_USER_BASE_INFO;
+    return {};
   }
 }
 
@@ -116,19 +131,12 @@ function getShortTimestamp() {
 export async function mainCli() {
   const argv = await yargs(hideBin(process.argv))
     .usage(
-      `Usage: $0 <job-description-file.txt> [options]\n\nExamples:\n  $0 job.txt --type resume\n  $0 job.txt --type coverLetter --platform openai\n  $0 job.txt --type both --user-template user.yaml\n  $0 --auth`,
+      `Usage: $0 <job-description-file.txt> [options]\n\nExamples:\n  $0 job.txt --type resume\n  $0 job.txt --type coverLetter\n  $0 job.txt --type both --user-template user.yaml\n  $0 --auth`,
     )
     .option('type', {
       alias: 't',
       describe: 'Type of content to generate',
       choices: ['resume', 'coverLetter', 'both'],
-      type: 'string',
-    })
-    .option('platform', {
-      alias: 'p',
-      describe: 'AI platform to use',
-      choices: ['gemini', 'openai'],
-      default: 'gemini',
       type: 'string',
     })
     .option('output-format', {
@@ -216,7 +224,12 @@ export async function mainCli() {
   }
 
   const userInfo = await loadUserInfo();
-  const provider = new Provider(argv.platform as 'gemini' | 'openai');
+  const config = db.getConfig();
+  const provider = new Provider(config.geminiApiKey, config.modelName || DEFAULT_MODEL_NAME);
+  if (!config.geminiApiKey) {
+    console.log('Gemini API key is not set. Please open the web UI and save it under Settings.');
+    return;
+  }
   const type = argv.type as PromptType;
   const outputFormat = argv['output-format'];
 

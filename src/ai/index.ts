@@ -1,33 +1,47 @@
 export type ContentType = 'resume' | 'coverLetter';
 export interface AIProvider {
-  generateContent(jobDescription: string, type: ContentType, userInfo: any): Promise<string>;
+  generateContent(
+    jobDescription: string,
+    type: ContentType,
+    userInfo: any,
+    apiKey?: string,
+    modelName?: string,
+  ): Promise<string>;
   validateKey?(key: string): Promise<boolean>;
 }
 
 import { GeminiProvider, validateGeminiKey } from './gemini';
-import { OpenAIProvider, validateOpenAIKey } from './openai';
 
-export { GeminiProvider, OpenAIProvider };
+export { GeminiProvider };
 
 export class Provider implements AIProvider {
   private provider: AIProvider;
-  private platform: 'gemini' | 'openai';
+  private apiKey?: string;
+  private modelName?: string;
 
-  constructor(platform: 'gemini' | 'openai') {
-    this.platform = platform;
-    if (platform === 'openai') {
-      this.provider = new OpenAIProvider();
-    } else {
-      this.provider = new GeminiProvider();
-    }
+  constructor(apiKey?: string, modelName?: string) {
+    this.provider = new GeminiProvider();
+    this.apiKey = apiKey;
+    this.modelName = modelName;
   }
 
-  generateContent(jobDescription: string, type: ContentType, userInfo: any): Promise<string> {
-    return this.provider.generateContent(jobDescription, type, userInfo);
+  generateContent(
+    jobDescription: string,
+    type: ContentType,
+    userInfo: any,
+    apiKey?: string,
+    modelName?: string,
+  ): Promise<string> {
+    return this.provider.generateContent(
+      jobDescription,
+      type,
+      userInfo,
+      apiKey || this.apiKey,
+      modelName || this.modelName,
+    );
   }
 
   async validateKey(key: string): Promise<boolean> {
-    if (this.platform === 'openai') return validateOpenAIKey(key);
     return validateGeminiKey(key);
   }
 }

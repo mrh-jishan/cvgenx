@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVGenX Studio - History</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body data-page="history">
+    <div class="halo halo-1"></div>
+    <div class="halo halo-2"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">CV</div>
+        <div>
+          <p class="eyebrow">CVGenX</p>
+          <p class="subtitle">AI-powered resume + cover letters</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-btn" href="/">Generate</a>
+        <a class="nav-btn" href="/settings">Settings</a>
+        <a class="nav-btn active" href="/history">History</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section id="historyPage" class="panel active">
+        <div class="panel-hero">
+          <div>
+            <p class="eyebrow">History</p>
+            <h1>Past generations</h1>
+            <p class="muted">Review and reuse your recent resumes and cover letters stored locally.</p>
+          </div>
+          <div class="badge-stack">
+            <div class="pill-ghost">Local SQLite</div>
+          </div>
+        </div>
+        <div class="card span-2">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Saved drafts</p>
+              <h2>Recent</h2>
+            </div>
+          </div>
+          <div class="history">
+            <% if (!initialData.history || !initialData.history.length) { %>
+              <p class="hint">No history yet.</p>
+            <% } else { %>
+              <% initialData.history.forEach(function(item){ %>
+                <div class="history-item">
+                  <div>
+                    <strong><%= item.type %></strong>
+                    <p class="history-meta"><%= (item.jobDescription || '').slice(0,160) %></p>
+                  </div>
+                  <div class="mini-pill"><%= new Date(item.createdAt).toLocaleString() %></div>
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

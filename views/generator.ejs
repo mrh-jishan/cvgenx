@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVGenX Studio - Generate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body data-page="generator">
+    <div class="halo halo-1"></div>
+    <div class="halo halo-2"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">CV</div>
+        <div>
+          <p class="eyebrow">CVGenX</p>
+          <p class="subtitle">AI-powered resume + cover letters</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-btn active" href="/">Generate</a>
+        <a class="nav-btn" href="/settings">Settings</a>
+        <a class="nav-btn" href="/history">History</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section id="generator" class="panel active">
+        <div class="panel-hero">
+          <div>
+            <p class="eyebrow">Workspace</p>
+            <h1>Generate resume + cover letter</h1>
+            <p class="muted">
+              Drop in a job description, upload your latest resume, and instantly craft a tailored
+              packet.
+            </p>
+          </div>
+          <div class="badge-stack">
+            <div class="pill"><%= initialData.hasGeminiKey ? 'API key saved' : 'API key missing' %></div>
+            <div class="pill-ghost"><%= (initialData.profiles || []).length %> profiles</div>
+          </div>
+        </div>
+
+        <% if (initialData.error) { %>
+          <div class="card"><p class="hint" style="color:#fca5a5;"><%= initialData.error %></p></div>
+        <% } %>
+        <% if (initialData.success) { %>
+          <div class="card"><p class="hint" style="color:#5de4c7;"><%= initialData.success %></p></div>
+        <% } %>
+
+        <form class="card-grid" action="/generate" method="post" enctype="multipart/form-data">
+          <div class="card span-2">
+            <label class="field-label">Job description</label>
+            <textarea name="jobDescription" rows="8" placeholder="Paste JD here"><%= initialData.jobDescription || '' %></textarea>
+          </div>
+
+          <div class="card">
+            <label class="field-label">Previous resume</label>
+            <select name="resumeId" class="select">
+              <option value="">Use latest</option>
+              <% (initialData.resumes || []).forEach(function(r){ %>
+                <option value="<%= r.id %>" <%= initialData.selectedResumeId == r.id ? 'selected' : '' %>>
+                  <%= r.filename || ('Resume ' + r.id) %>
+                </option>
+              <% }) %>
+            </select>
+            <p class="hint">Stored locally; latest is reused if none selected.</p>
+          </div>
+
+          <div class="card">
+            <div class="field-label row">
+              <span>Upload new resume</span>
+              <span class="hint">PDF, markdown, or text</span>
+            </div>
+            <div class="upload-zone">
+              <input class="file-input" type="file" name="resume" accept=".pdf,.txt,.md,.markdown,.docx" />
+              <p class="hint">Optional: overrides previous resumes.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <label class="field-label">Or paste resume text</label>
+            <textarea name="resumeText" rows="6" placeholder="Paste your current resume text"><%= (initialData.latestResume && initialData.latestResume.content) || '' %></textarea>
+          </div>
+
+          <div class="card">
+            <label class="field-label">What to generate</label>
+            <select name="type" class="select">
+              <option value="resume" <%= (!initialData.type || initialData.type === 'resume') ? 'selected' : '' %>>Resume</option>
+              <option value="coverLetter" <%= initialData.type === 'coverLetter' ? 'selected' : '' %>>Cover letter</option>
+              <option value="both" <%= initialData.type === 'both' ? 'selected' : '' %>>Both</option>
+            </select>
+          </div>
+
+          <div class="card actions span-2">
+            <button type="submit" class="primary">Generate</button>
+          </div>
+        </form>
+
+        <div class="card span-2 results">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Output</p>
+              <h2>Fresh drafts</h2>
+            </div>
+          </div>
+          <div id="results">
+            <% if (!initialData.results || !initialData.results.length) { %>
+              <p class="hint">Nothing generated yet.</p>
+            <% } else { %>
+              <% initialData.results.forEach(function(r){ %>
+                <div class="result-card">
+                  <div class="row" style="justify-content: space-between;">
+                    <h3><%= r.type === 'coverLetter' ? 'Cover letter' : 'Resume' %></h3>
+                    <div class="chip-row">
+                      <button class="ghost" type="button" data-copy-text="<%= encodeURIComponent(r.content || '') %>">Copy</button>
+                      <button class="ghost" type="button" data-download-type="md" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.md</button>
+                      <button class="ghost" type="button" data-download-type="pdf" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.pdf</button>
+                      <button class="ghost" type="button" data-download-type="docx" data-download-text="<%= encodeURIComponent(r.content || '') %>" data-filename="cvgenx-<%= r.type %>">.docx</button>
+                    </div>
+                  </div>
+                  <pre><%- r.content %></pre>
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="card span-2">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Previous jobs</p>
+              <h2>Recent prompts</h2>
+            </div>
+          </div>
+          <div class="history">
+            <% if (!initialData.history || !initialData.history.length) { %>
+              <p class="hint">No history yet.</p>
+            <% } else { %>
+              <% initialData.history.forEach(function(item){ %>
+                <div class="history-item">
+                  <div>
+                    <strong><%= item.type %></strong>
+                    <p class="history-meta"><%= (item.jobDescription || '').slice(0, 160) %></p>
+                  </div>
+                  <form method="post" action="/generate">
+                    <input type="hidden" name="jobDescription" value="<%- item.jobDescription %>" />
+                    <input type="hidden" name="type" value="<%= item.type %>" />
+                    <input type="hidden" name="resumeId" value="<%= item.resumeId || '' %>" />
+                    <button class="ghost" type="submit">Reuse</button>
+                  </form>
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

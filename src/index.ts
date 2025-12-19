@@ -1,5 +1,8 @@
+import { startServer } from './server';
 import { mainCli } from './cli';
-import { loadConfig } from './config';
 
-loadConfig();
-mainCli();
+if (process.argv.includes('--cli')) {
+  mainCli();
+} else {
+  startServer();
+}

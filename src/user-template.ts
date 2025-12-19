@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
-import { DEFAULT_USER_BASE_INFO } from './user-base-info';
 import yaml from 'js-yaml';
 
 export async function editUserTemplate(filePath?: string) {
@@ -28,7 +27,7 @@ export async function editUserTemplate(filePath?: string) {
     return;
   }
   // Interactive prompt for all fields
-  let user: any = { ...DEFAULT_USER_BASE_INFO };
+  let user: any = {};
   // Load existing if file exists
   try {
     const content = await fs.readFile(userFile, 'utf8');

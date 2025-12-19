@@ -12,29 +12,12 @@ export function loadConfig() {
   dotenv.config({ path: localEnvPath });
 }
 
-export async function saveConfig(gemini: string, openai: string, defaultPlatform: string) {
+export async function saveConfig(gemini: string) {
   const homeEnvPath = path.join(os.homedir(), '.cvgenx.env');
   let envContent = '';
   if (gemini) envContent += `GEMINI_API_KEY=${gemini}\n`;
-  if (openai) envContent += `OPENAI_API_KEY=${openai}\n`;
-  if (defaultPlatform) envContent += `cvgenx_DEFAULT_PLATFORM=${defaultPlatform}\n`;
   await fs.writeFile(homeEnvPath, envContent, { encoding: 'utf8' });
   return homeEnvPath;
-}
-
-export async function getDefaultPlatform(): Promise<string | undefined> {
-  const homeEnvPath = path.join(os.homedir(), '.cvgenx.env');
-  try {
-    const envContent = await fs.readFile(homeEnvPath, 'utf8');
-    for (const line of envContent.split('\n')) {
-      if (line.startsWith('cvgenx_DEFAULT_PLATFORM=')) {
-        return line.replace('cvgenx_DEFAULT_PLATFORM=', '').trim();
-      }
-    }
-  } catch {
-    // ignore missing config file
-  }
-  return undefined;
 }
 
 export async function saveUserTemplatePath(path: string) {

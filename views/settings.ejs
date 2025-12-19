@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVGenX Studio - Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body data-page="settings">
+    <div class="halo halo-1"></div>
+    <div class="halo halo-2"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">CV</div>
+        <div>
+          <p class="eyebrow">CVGenX</p>
+          <p class="subtitle">AI-powered resume + cover letters</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-btn" href="/">Generate</a>
+        <a class="nav-btn active" href="/settings">Settings</a>
+        <a class="nav-btn" href="/history">History</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section id="settings" class="panel active">
+        <div class="panel-hero">
+          <div>
+            <p class="eyebrow">Setup</p>
+            <h1>API key + resume memory</h1>
+            <p class="muted">
+              Store your Gemini key and view the merged knowledge from your recent resumes. Upload a new resume anytime on the Generate page to refresh this snapshot.
+            </p>
+          </div>
+          <div class="badge-stack">
+            <div class="pill">Secure & local (SQLite)</div>
+            <div class="pill-ghost">Resume-driven context</div>
+          </div>
+        </div>
+        <% if (initialData.message) { %>
+          <div class="card"><p class="hint" style="color:#5de4c7;"><%= initialData.message %></p></div>
+        <% } %>
+        <div class="settings-layout">
+          <div class="settings-main">
+            <form id="settings-form" class="card key-card" action="/settings/key" method="post">
+              <div class="field-label row">
+                <span>Gemini API key</span>
+                <span class="status <%= initialData.hasGeminiKey ? 'ok' : 'neutral' %>"><%= initialData.hasGeminiKey ? 'Key stored' : 'Not set' %></span>
+              </div>
+              <input type="password" id="geminiKey" name="geminiKey" placeholder="<%= initialData.keyPreview || 'GEMINI_API_KEY' %>" />
+              <label class="field-label" style="margin-top:12px;">Model name</label>
+              <input type="text" id="modelName" name="modelName" value="<%= initialData.modelName || '' %>" placeholder="gemini-2.5-flash" />
+              <p class="hint">
+                Stored locally in SQLite. The key is only used when you hit generate.
+              </p>
+              <div class="actions" style="margin-top: 12px;">
+                <button type="submit" class="primary">Save key</button>
+              </div>
+            </form>
+
+            <div class="card">
+              <div class="field-label row">
+                <span>Resume knowledge</span>
+                <span class="hint">Merged from recent uploads</span>
+              </div>
+              <textarea rows="12" readonly><%= initialData.mergedResume || 'Upload a resume to populate this summary.' %></textarea>
+              <p class="hint">This snapshot is built from your uploaded resumes; upload a new one on the Generate page to refresh.</p>
+            </div>
+          </div>
+          <aside class="card settings-aside">
+            <p class="eyebrow">Recent resumes</p>
+            <% if (!initialData.resumes || !initialData.resumes.length) { %>
+              <p class="hint">No resumes uploaded yet.</p>
+            <% } else { %>
+              <ul class="tip-list">
+                <% initialData.resumes.forEach(function(r){ %>
+                  <li><strong><%= r.filename || 'Resume' %></strong> — <%= new Date(r.createdAt).toLocaleString() %></li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
