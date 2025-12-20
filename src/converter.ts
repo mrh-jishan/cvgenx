@@ -185,10 +185,10 @@ export async function markdownToPdfBuffer(markdown: string): Promise<Buffer> {
   const options = { 
     format: 'Letter',
     margin: {
-      top: '0.75in',
-      right: '0.75in',
-      bottom: '0.75in',
-      left: '0.75in'
+      top: '0.25in',
+      right: '0.25in',
+      bottom: '0.25in',
+      left: '0.25in'
     },
     printBackground: true,
     preferCSSPageSize: false
