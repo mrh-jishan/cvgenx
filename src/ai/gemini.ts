@@ -19,11 +19,11 @@ export class GeminiProvider implements AIProvider {
       model,
       contents: prompt.toString(),
     });
-    
+
     // Clean the response text by removing code fences that Gemini sometimes adds
     let text = response.text || '';
     text = text.trim();
-    
+
     // Remove markdown code fences: ```markdown ... ``` or ``` ... ```
     if (text.startsWith('```markdown')) {
       text = text.replace(/^```markdown\n?/, '');
@@ -33,7 +33,7 @@ export class GeminiProvider implements AIProvider {
     if (text.endsWith('```')) {
       text = text.replace(/\n?```$/, '');
     }
-    
+
     return text.trim();
   }
 }

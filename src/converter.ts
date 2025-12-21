@@ -180,19 +180,19 @@ export async function markdownToPdfBuffer(markdown: string): Promise<Buffer> {
 
   // Convert HTML to PDF using html-pdf-node
   const file = { content: fullHtml };
-  const options = { 
+  const options = {
     format: 'Letter',
     margin: {
       top: '0.25in',
       right: '0.25in',
       bottom: '0.25in',
-      left: '0.25in'
+      left: '0.25in',
     },
     printBackground: true,
-    preferCSSPageSize: false
+    preferCSSPageSize: false,
   };
 
-  const pdfBuffer = await htmlPdf.generatePdf(file, options) as unknown as Buffer;
+  const pdfBuffer = (await htmlPdf.generatePdf(file, options)) as unknown as Buffer;
   return pdfBuffer;
 }
 
@@ -203,21 +203,21 @@ export async function markdownToPdfBuffer(markdown: string): Promise<Buffer> {
 export async function markdownToDocxBuffer(markdown: string): Promise<Buffer> {
   const html = await markdownToHtml(markdown);
   const fullHtml = wrapInHtmlDocument(html);
-  
+
   // html-docx-js has inconsistent types, handle both asBuffer and asBlob
-  const result = (htmlDocx as any).asBuffer 
-    ? (htmlDocx as any).asBuffer(fullHtml) 
+  const result = (htmlDocx as any).asBuffer
+    ? (htmlDocx as any).asBuffer(fullHtml)
     : (htmlDocx as any).asBlob(fullHtml);
-  
+
   if (Buffer.isBuffer(result)) {
     return result;
   }
-  
+
   if (result?.arrayBuffer) {
     const arrayBuffer = await result.arrayBuffer();
     return Buffer.from(arrayBuffer);
   }
-  
+
   throw new Error('Failed to convert markdown to DOCX');
 }
 

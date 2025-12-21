@@ -237,9 +237,7 @@ export class CvgenxDb {
 
   updateGeneration(id: number, output: string) {
     if (!id) return;
-    this.db
-      .prepare(`UPDATE generations SET output = @output WHERE id = @id`)
-      .run({ id, output });
+    this.db.prepare(`UPDATE generations SET output = @output WHERE id = @id`).run({ id, output });
   }
 
   deleteGeneration(id: number) {

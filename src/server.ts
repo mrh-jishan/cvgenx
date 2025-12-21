@@ -290,7 +290,7 @@ export function createServer() {
   // Download generated content as md/pdf/docx
   app.post('/download', async (req, res) => {
     const { format = 'md', filename = 'cvgenx', content = '' } = req.body;
-    
+
     if (!content) {
       res.status(400).send('Missing content');
       return;
@@ -318,7 +318,10 @@ export function createServer() {
 
       if (format === 'docx') {
         const docxBuffer = await markdownToDocxBuffer(content);
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader(
+          'Content-Type',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        );
         res.setHeader('Content-Disposition', `attachment; filename="${filename}.docx"`);
         res.send(docxBuffer);
         return;
@@ -327,7 +330,9 @@ export function createServer() {
       res.status(400).send('Invalid format. Use md, pdf, or docx');
     } catch (err) {
       console.error('Download error:', err);
-      res.status(500).send('Download failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      res
+        .status(500)
+        .send('Download failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   });
 
@@ -335,7 +340,7 @@ export function createServer() {
   app.get('/history/edit/:id', (req, res) => {
     const id = Number(req.params.id);
     const generation = db.getGeneration(id);
-    
+
     if (!generation) {
       res.render('history', {
         initialData: {
@@ -375,7 +380,7 @@ export function createServer() {
     try {
       db.updateGeneration(id, content);
       const updatedGeneration = db.getGeneration(id);
-      
+
       res.render('edit', {
         initialData: {
           page: 'edit',
