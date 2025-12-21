@@ -192,7 +192,7 @@ export async function markdownToPdfBuffer(markdown: string): Promise<Buffer> {
     preferCSSPageSize: false
   };
 
-  const pdfBuffer = await htmlPdf.generatePdf(file, options);
+  const pdfBuffer = await htmlPdf.generatePdf(file, options) as unknown as Buffer;
   return pdfBuffer;
 }
 
