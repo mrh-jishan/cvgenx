@@ -11,11 +11,25 @@ Web UI and CLI to generate tailored resumes and cover letters with Gemini. The w
 
 ## Install & run (web server)
 ```bash
+# Quick start with npx (no install needed)
+npx cvgenx
+
+# Or install locally
 npm install
 # start web UI on http://localhost:4173
 npm start
 # optional: rebuild a fresh SQLite db (drops previous data)
 npm start -- --reset-db
+```
+
+### Troubleshooting
+
+**Linux: node-gyp rebuild errors**
+
+If you encounter build errors related to `node-gyp` on Linux, install build tools:
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential
 ```
 
 ### What the web app does
