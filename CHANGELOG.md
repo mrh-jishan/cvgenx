@@ -1,3 +1,10 @@
+# [1.37.0](https://github.com/mrh-jishan/cvgenx/compare/v1.36.0...v1.37.0) (2025-12-21)
+
+
+### Features
+
+* **config:** disable publish ([f1bd7de](https://github.com/mrh-jishan/cvgenx/commit/f1bd7dedeffef5bbde77333f4b75dbfd0f0be2c4))
+
 # [1.36.0](https://github.com/mrh-jishan/cvgenx/compare/v1.35.0...v1.36.0) (2025-12-21)
 
 
