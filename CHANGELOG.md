@@ -1,3 +1,10 @@
+# [1.36.0](https://github.com/mrh-jishan/cvgenx/compare/v1.35.0...v1.36.0) (2025-12-21)
+
+
+### Features
+
+* **config:** tsc ([e7c6294](https://github.com/mrh-jishan/cvgenx/commit/e7c629428659a99237653a8895887ce276fd48fb))
+
 # [1.35.0](https://github.com/mrh-jishan/cvgenx/compare/v1.34.0...v1.35.0) (2025-12-21)
 
 
