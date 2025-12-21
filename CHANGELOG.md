@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/mrh-jishan/cvgenx/compare/v1.37.0...v1.38.0) (2025-12-21)
+
+
+### Features
+
+* **config:** update start instruction ([9b36264](https://github.com/mrh-jishan/cvgenx/commit/9b362646b1ab9e60ae66f60155075b1aaef1cf8c))
+
 # [1.37.0](https://github.com/mrh-jishan/cvgenx/compare/v1.36.0...v1.37.0) (2025-12-21)
 
 
