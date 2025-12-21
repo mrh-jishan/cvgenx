@@ -1,7 +1,5 @@
 import { marked } from 'marked';
-// @ts-ignore
 import htmlPdf from 'html-pdf-node';
-// @ts-ignore
 import htmlDocx from 'html-docx-js';
 import fs from 'fs/promises';
 
