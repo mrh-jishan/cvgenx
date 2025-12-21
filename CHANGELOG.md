@@ -1,3 +1,20 @@
+# [1.35.0](https://github.com/mrh-jishan/cvgenx/compare/v1.34.0...v1.35.0) (2025-12-21)
+
+
+### Features
+
+* **config:** added copy assets ([f8fb3ae](https://github.com/mrh-jishan/cvgenx/commit/f8fb3aecb674d9640bc424fd7ae9ff39d5a7b8ca))
+* **config:** added copy assets ([dc0b72e](https://github.com/mrh-jishan/cvgenx/commit/dc0b72e5d46a395dbfd97d4a5569297046ed0829))
+* **config:** added copy assets ([bb862be](https://github.com/mrh-jishan/cvgenx/commit/bb862be7306c3d1205b9732d342aaeddd38251c8))
+* **config:** added edit and design change ([51adf5d](https://github.com/mrh-jishan/cvgenx/commit/51adf5d98c9c01104210d126a0c6fe59b2a65a46))
+* **config:** added pdf and docx ([bcdd719](https://github.com/mrh-jishan/cvgenx/commit/bcdd719b9d7f3aaced294fdbf8c44d4905047b8f))
+* **config:** fix download pdf ([6681281](https://github.com/mrh-jishan/cvgenx/commit/6681281c72524fde3f995777697cae432921580a))
+* **config:** fix tsc ([9cf7623](https://github.com/mrh-jishan/cvgenx/commit/9cf762347267658647f065e18b1d0d3b35c81eec))
+* **config:** refactor ([4045c15](https://github.com/mrh-jishan/cvgenx/commit/4045c15a3363ce891bff1de7ad331338ee96cea3))
+* **config:** remove unused packages ([71468e9](https://github.com/mrh-jishan/cvgenx/commit/71468e9cfd672cd00fc91a5c945e796490691f35))
+* **config:** update ([96555cd](https://github.com/mrh-jishan/cvgenx/commit/96555cd8c58c356ee49eaa379ba3a61a91162c0b))
+* **config:** update ([6391c23](https://github.com/mrh-jishan/cvgenx/commit/6391c2305f430cffe25de1ddcac11ca7fb39a9d3))
+
 # [1.34.0](https://github.com/mrh-jishan/cvgenx/compare/v1.33.0...v1.34.0) (2025-12-19)
 
 
